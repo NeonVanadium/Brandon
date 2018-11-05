@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		560B80392190F091007A0E7C /* events.txt in Resources */ = {isa = PBXBuildFile; fileRef = 560B80382190F091007A0E7C /* events.txt */; };
 		566014FE214C54180072AB50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566014FD214C54180072AB50 /* AppDelegate.swift */; };
-		56601500214C54180072AB50 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 566014FF214C54180072AB50 /* GameScene.sks */; };
 		56601502214C54180072AB50 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 56601501214C54180072AB50 /* Actions.sks */; };
 		56601504214C54180072AB50 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56601503214C54180072AB50 /* GameScene.swift */; };
 		56601506214C54180072AB50 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56601505214C54180072AB50 /* GameViewController.swift */; };
@@ -17,6 +17,14 @@
 		5660150E214C54190072AB50 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5660150C214C54190072AB50 /* LaunchScreen.storyboard */; };
 		56601519214C54190072AB50 /* BrandonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56601518214C54190072AB50 /* BrandonTests.swift */; };
 		56601524214C54190072AB50 /* BrandonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56601523214C54190072AB50 /* BrandonUITests.swift */; };
+		56C28ECD216D4A0D003F2B48 /* Interactable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C28ECC216D4A0D003F2B48 /* Interactable.swift */; };
+		56C4DB392177C51D0061F94A /* DialogueBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C4DB382177C51D0061F94A /* DialogueBox.swift */; };
+		56C4DB3B2177C7C40061F94A /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C4DB3A2177C7C40061F94A /* Util.swift */; };
+		56C4DB3D217E6E6F0061F94A /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C4DB3C217E6E6F0061F94A /* Player.swift */; };
+		56C4DB412180FDE90061F94A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C4DB402180FDE90061F94A /* Event.swift */; };
+		56D61E392188FBC0007121FE /* Map.txt in Resources */ = {isa = PBXBuildFile; fileRef = 56D61E382188FBC0007121FE /* Map.txt */; };
+		56D61E3B2188FC9C007121FE /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 56D61E3A2188FC9C007121FE /* GameScene.sks */; };
+		56D61E41218A3875007121FE /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D61E40218A3875007121FE /* EventHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,9 +45,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		560B80382190F091007A0E7C /* events.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = events.txt; sourceTree = "<group>"; };
 		566014FA214C54180072AB50 /* Brandon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Brandon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		566014FD214C54180072AB50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		566014FF214C54180072AB50 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		56601501214C54180072AB50 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		56601503214C54180072AB50 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		56601505214C54180072AB50 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -53,6 +61,14 @@
 		5660151F214C54190072AB50 /* BrandonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrandonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		56601523214C54190072AB50 /* BrandonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrandonUITests.swift; sourceTree = "<group>"; };
 		56601525214C54190072AB50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56C28ECC216D4A0D003F2B48 /* Interactable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interactable.swift; sourceTree = "<group>"; };
+		56C4DB382177C51D0061F94A /* DialogueBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogueBox.swift; sourceTree = "<group>"; };
+		56C4DB3A2177C7C40061F94A /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		56C4DB3C217E6E6F0061F94A /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		56C4DB402180FDE90061F94A /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		56D61E382188FBC0007121FE /* Map.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Map.txt; sourceTree = "<group>"; };
+		56D61E3A2188FC9C007121FE /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = GameScene.sks; path = ../../../../.Trash/GameScene.sks; sourceTree = "<group>"; };
+		56D61E40218A3875007121FE /* EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				566014FD214C54180072AB50 /* AppDelegate.swift */,
-				566014FF214C54180072AB50 /* GameScene.sks */,
+				56D61E3A2188FC9C007121FE /* GameScene.sks */,
 				56601501214C54180072AB50 /* Actions.sks */,
 				56601503214C54180072AB50 /* GameScene.swift */,
 				56601505214C54180072AB50 /* GameViewController.swift */,
@@ -112,6 +128,14 @@
 				5660150A214C54190072AB50 /* Assets.xcassets */,
 				5660150C214C54190072AB50 /* LaunchScreen.storyboard */,
 				5660150F214C54190072AB50 /* Info.plist */,
+				56C28ECC216D4A0D003F2B48 /* Interactable.swift */,
+				56C4DB382177C51D0061F94A /* DialogueBox.swift */,
+				56C4DB3A2177C7C40061F94A /* Util.swift */,
+				56C4DB3C217E6E6F0061F94A /* Player.swift */,
+				56C4DB402180FDE90061F94A /* Event.swift */,
+				56D61E382188FBC0007121FE /* Map.txt */,
+				56D61E40218A3875007121FE /* EventHandler.swift */,
+				560B80382190F091007A0E7C /* events.txt */,
 			);
 			path = Brandon;
 			sourceTree = "<group>";
@@ -238,11 +262,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				560B80392190F091007A0E7C /* events.txt in Resources */,
 				56601509214C54180072AB50 /* Main.storyboard in Resources */,
-				56601500214C54180072AB50 /* GameScene.sks in Resources */,
 				5660150B214C54190072AB50 /* Assets.xcassets in Resources */,
 				5660150E214C54190072AB50 /* LaunchScreen.storyboard in Resources */,
 				56601502214C54180072AB50 /* Actions.sks in Resources */,
+				56D61E3B2188FC9C007121FE /* GameScene.sks in Resources */,
+				56D61E392188FBC0007121FE /* Map.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,9 +293,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56C4DB412180FDE90061F94A /* Event.swift in Sources */,
 				56601504214C54180072AB50 /* GameScene.swift in Sources */,
+				56C4DB3B2177C7C40061F94A /* Util.swift in Sources */,
 				56601506214C54180072AB50 /* GameViewController.swift in Sources */,
+				56D61E41218A3875007121FE /* EventHandler.swift in Sources */,
 				566014FE214C54180072AB50 /* AppDelegate.swift in Sources */,
+				56C4DB3D217E6E6F0061F94A /* Player.swift in Sources */,
+				56C4DB392177C51D0061F94A /* DialogueBox.swift in Sources */,
+				56C28ECD216D4A0D003F2B48 /* Interactable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

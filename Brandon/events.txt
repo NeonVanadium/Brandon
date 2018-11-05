@@ -1,0 +1,3 @@
+//SAMPLE;
++create box;
+-orange boi, hello;
