@@ -10,23 +10,35 @@ import Foundation
 
 class Event{
     
-    private var parts: [AnyObject]
-    private var string = ""
-    
-    var expires: Bool //Is this conversation repeatable?
+    private var parts: [AnyObject] = [AnyObject]()
+    var expires: Bool = true//Is this conversation repeatable?
     
     init(_ fromFile: String){
-        do{
-            string = try NSString.init(contentsOfFile: fromFile, encoding: 0) as String
+        
+        var string = ""
+        
+        do{ //try and parse the file
+            let path = Bundle.main.path(forResource: "events", ofType: "txt") // file path for file "events.txt"
+            string = try String(contentsOfFile: path!, encoding: String.Encoding.ascii)
         }
         catch{
             fatalError("ruh roh.")
         }
         
-        parts = []
-        string = ""
+        for str in string.split(separator: ";"){
+            print(str)
+            print(str.starts(with: "+"))
+            print(str.starts(with: "-"))
+            //if(str.starts(with: "/")){}
+            if(str.starts(with: "+")){
+                print(str)
+            }
+            if(str.starts(with: "-")){
+                parts.append(Line.init(str.capitalized) as AnyObject)
+            }
+        }
         
-        string.split(separator: ';')
+        
         
     }
     

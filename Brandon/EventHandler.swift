@@ -30,7 +30,7 @@ class EventHandler {
     static func proceed(){
         pointInEvent += 1
         
-        if(pointInEvent >= curEvent!.numLines()){
+        if(pointInEvent >= curEvent!.numParts()){
             pointInEvent = -1
             curEvent = nil
             DialogueBox.hide()
@@ -51,10 +51,10 @@ class EventHandler {
         DialogueBox.setSpeakerName(i.name!)
         DialogueBox.show()
         
-        if(i.conversation != nil){
-            hostEvent(i.conversation!)
-            if(i.conversation!.expires){
-                i.conversation = nil
+        if(i.event != nil){
+            hostEvent(i.event!)
+            if(i.event!.expires){
+                i.event = nil
             }
         }
         else{

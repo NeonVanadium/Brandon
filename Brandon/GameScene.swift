@@ -152,13 +152,16 @@ class GameScene: SKScene {
         self.addChild(Util.createRect(w: 600, h: 100, x: 0, y: 450))
         self.addChild(Util.createRect(w: 600, h: 100, x: 0, y: -450))
         
+        let e = Event.init("Documents/xcode projects/Brandon/Brandon/events.txt")
+        
         self.addChild(Interactable.init(name: "Green boi", body: Util.createRect(w: 75, h: 75, x: 0, y: 0, color: .green), x: 0, y: -200))
-        (self.childNode(withName: "Green boi") as! Interactable).event = Event.init(test: 1)
+        (self.childNode(withName: "Green boi") as! Interactable).event = e//Event.init(test: 1)
         (self.childNode(withName: "Green boi") as! Interactable).boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
             
         self.addChild(Interactable.init(name: "Orange boi", body: Util.createRect(w: 75, h: 75, x: 0, y: 0, color: .orange), x: 0, y: 200))
         (self.childNode(withName: "Orange boi") as! Interactable).event = Event.init(test: 0)
         (self.childNode(withName: "Orange boi") as! Interactable).boxColor = .orange
+        
         
     }
 
