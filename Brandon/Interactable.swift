@@ -11,11 +11,27 @@ import SpriteKit
 
 class Interactable: SKNode {
     
-    private var body: SKShapeNode?
+    private var body: SKNode?
     var boxColor: UIColor?
     var event: Event?
     
-    init(name n : String, body b : SKShapeNode, x: Int, y: Int) {
+    init(_ line: String){
+        
+        super.init()
+        
+        let components = line.split(separator: ";")
+        
+        name = String(components[0])
+        
+        var b = SKSpriteNode.init(imageNamed: String(components[1]));
+        b.physicsBody = SKPhysicsBody.init(rectangleOf: b.size)
+        setBody(b)
+        
+        //TODO Create physics body
+        
+    }
+    
+   /* init(name n : String, body b : SKShapeNode, x: Int, y: Int) {
 
         super.init()
         setBody(b)
@@ -27,9 +43,9 @@ class Interactable: SKNode {
     init(name n: String){
         super.init()
         name = n;
-    }
+    }*/
     
-    func setBody(_ b:SKShapeNode){
+    func setBody(_ b:SKNode){
         
         let physbod = b.physicsBody
         b.physicsBody = nil

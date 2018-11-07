@@ -15,26 +15,20 @@ class Event{
     
     init(_ fromFile: String){
         
-        var string = ""
+        let string = Util.loadFile(name: "events", extension: "txt")
         
-        do{ //try and parse the file
-            let path = Bundle.main.path(forResource: "events", ofType: "txt") // file path for file "events.txt"
-            string = try String(contentsOfFile: path!, encoding: String.Encoding.ascii)
-        }
-        catch{
-            fatalError("ruh roh.")
-        }
-        
-        for str in string.split(separator: ";"){
-            print(str)
-            print(str.starts(with: "+"))
-            print(str.starts(with: "-"))
+        for substring in string.split(separator: "\n"){
+            
+            let cur = String(substring)
+            
             //if(str.starts(with: "/")){}
-            if(str.starts(with: "+")){
-                print(str)
+            if(cur.starts(with: "+")){
+                print(cur)
             }
-            if(str.starts(with: "-")){
-                parts.append(Line.init(str.capitalized) as AnyObject)
+            if(cur.starts(with: "-")){
+                let parsed = cur.split(separator: ";")
+                
+                parts.append(Line.init(String(parsed[1])) as AnyObject)
             }
         }
         

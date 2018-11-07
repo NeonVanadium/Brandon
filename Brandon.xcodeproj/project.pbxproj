@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		560B80392190F091007A0E7C /* events.txt in Resources */ = {isa = PBXBuildFile; fileRef = 560B80382190F091007A0E7C /* events.txt */; };
+		560B803B219377B6007A0E7C /* entities.txt in Resources */ = {isa = PBXBuildFile; fileRef = 560B803A219377B6007A0E7C /* entities.txt */; };
+		560B803D21937DD9007A0E7C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560B803C21937DD9007A0E7C /* Data.swift */; };
 		566014FE214C54180072AB50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566014FD214C54180072AB50 /* AppDelegate.swift */; };
 		56601502214C54180072AB50 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 56601501214C54180072AB50 /* Actions.sks */; };
 		56601504214C54180072AB50 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56601503214C54180072AB50 /* GameScene.swift */; };
@@ -46,6 +48,8 @@
 
 /* Begin PBXFileReference section */
 		560B80382190F091007A0E7C /* events.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = events.txt; sourceTree = "<group>"; };
+		560B803A219377B6007A0E7C /* entities.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = entities.txt; sourceTree = "<group>"; };
+		560B803C21937DD9007A0E7C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		566014FA214C54180072AB50 /* Brandon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Brandon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		566014FD214C54180072AB50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		56601501214C54180072AB50 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -136,6 +140,8 @@
 				56D61E382188FBC0007121FE /* Map.txt */,
 				56D61E40218A3875007121FE /* EventHandler.swift */,
 				560B80382190F091007A0E7C /* events.txt */,
+				560B803A219377B6007A0E7C /* entities.txt */,
+				560B803C21937DD9007A0E7C /* Data.swift */,
 			);
 			path = Brandon;
 			sourceTree = "<group>";
@@ -226,13 +232,16 @@
 				TargetAttributes = {
 					566014F9214C54180072AB50 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 					56601513214C54190072AB50 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = 566014F9214C54180072AB50;
 					};
 					5660151E214C54190072AB50 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = 566014F9214C54180072AB50;
 					};
 				};
@@ -269,6 +278,7 @@
 				56601502214C54180072AB50 /* Actions.sks in Resources */,
 				56D61E3B2188FC9C007121FE /* GameScene.sks in Resources */,
 				56D61E392188FBC0007121FE /* Map.txt in Resources */,
+				560B803B219377B6007A0E7C /* entities.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56C4DB412180FDE90061F94A /* Event.swift in Sources */,
+				560B803D21937DD9007A0E7C /* Data.swift in Sources */,
 				56601504214C54180072AB50 /* GameScene.swift in Sources */,
 				56C4DB3B2177C7C40061F94A /* Util.swift in Sources */,
 				56601506214C54180072AB50 /* GameViewController.swift in Sources */,
@@ -483,7 +494,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JackWhitten.Brandon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -501,7 +512,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JackWhitten.Brandon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -521,7 +532,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JackWhitten.BrandonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Brandon.app/Brandon";
 			};
@@ -542,7 +553,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JackWhitten.BrandonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Brandon.app/Brandon";
 			};
@@ -562,7 +573,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JackWhitten.BrandonUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Brandon;
 			};
@@ -582,7 +593,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JackWhitten.BrandonUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Brandon;
 			};

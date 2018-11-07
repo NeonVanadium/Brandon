@@ -11,9 +11,13 @@ import SpriteKit
 
 class Player : Interactable {
     
-    override init(name n: String, body b: SKShapeNode, x: Int, y: Int) {
-        super.init(name: n, body: b, x: x, y: y)
+    override init(_ line: String){
+        super.init(line);
     }
+    
+    /*override init(name n: String, body b: SKShapeNode, x: Int, y: Int) {
+        super.init(name: n, body: b, x: x, y: y)
+    }*/
     
     func canInteract() -> Interactable?{
         
@@ -30,7 +34,7 @@ class Player : Interactable {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     
 }

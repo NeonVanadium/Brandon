@@ -1,1 +1,3 @@
-green boy; new piskel.png; 
+Brandon;red.png
+Tyson;green.png
+Blue;blue.png

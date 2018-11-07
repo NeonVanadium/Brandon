@@ -15,7 +15,7 @@ class GameScene: SKScene {
     var graphs = [String : GKGraph]()
     
     private var lastUpdateTime : TimeInterval = 0
-    private var player : Player = Player.init(name: "Brandon", body: Util.createRect(w: 100, h: 100, x: 0, y: 0, color: .red), x: 0, y: 0)
+    private var player : Player?
     private var touchOrigin : CGPoint?
     private var vector : simd_float2 = simd_float2.init() //the movement vector
     private var moveStick : SKShapeNode = SKShapeNode.init(circleOfRadius: 80)
@@ -23,21 +23,27 @@ class GameScene: SKScene {
     private var box: SKNode = DialogueBox.setup() //the dialogue box
     private var moved: Bool = false
     
+    
     override func sceneDidLoad() {
-
+        
         self.lastUpdateTime = 0
         
+        
+        Data.setupEntities()
+        Data.setupEvents()
+        
         initMap() //sets up map
+        player = Data.entities["Brandon"] as! Player
         
         let camera = SKCameraNode.init()
         
         /*camera.addChild(console)
         console.position.y = 300*/
         
-        player.letBeDynamic()
+        player!.letBeDynamic()
     
-        player.addChild(camera) //locks camera to player
-        self.addChild(player) //puts player in the scene
+        player!.addChild(camera) //locks camera to player
+        self.addChild(player!) //puts player in the scene
         self.camera = camera //sets main camera to that assinged to the player
         self.camera?.addChild(box) //assigns dialogue box to camera
         
@@ -58,7 +64,7 @@ class GameScene: SKScene {
         incircle.fillColor = SKColor.gray
         moveStick.addChild(incircle)
         
-        player.addChild(moveStick)
+        player!.addChild(moveStick)
     }
     
     func setTouchOrigin(toPoint pos : CGPoint) { //sets the movestick to a point
@@ -98,7 +104,7 @@ class GameScene: SKScene {
     }
     
     func playerRelativePosition(from point : CGPoint) -> CGPoint{
-        return CGPoint.init(x: point.x - player.position.x, y: point.y - player.position.y)
+        return CGPoint.init(x: point.x - player!.position.x, y: point.y - player!.position.y)
     }
     
     func movePlayerToken(){
@@ -108,7 +114,7 @@ class GameScene: SKScene {
         if(abs(vector[0]) > minDistance || abs(vector[1]) > minDistance) {
             
             moveStick.isHidden = false;
-            player.run(.move(by: getSpeed(), duration: 0))
+            player!.run(.move(by: getSpeed(), duration: 0))
             box.isHidden = true
             moved = true
             
@@ -154,6 +160,17 @@ class GameScene: SKScene {
         
         let e = Event.init("Documents/xcode projects/Brandon/Brandon/events.txt")
         
+        self.addChild(Data.entities["Tyson"]!);
+        Data.entities["Tyson"]!.event = e
+        Data.entities["Tyson"]!.position = CGPoint.init(x: 0, y: -200)
+        Data.entities["Tyson"]!.boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
+        
+        self.addChild(Data.entities["Blue"]!);
+        Data.entities["Blue"]!.event = e
+        Data.entities["Blue"]!.position = CGPoint.init(x: 0, y: -200)
+        Data.entities["Blue"]!.boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
+        
+        /*
         self.addChild(Interactable.init(name: "Green boi", body: Util.createRect(w: 75, h: 75, x: 0, y: 0, color: .green), x: 0, y: -200))
         (self.childNode(withName: "Green boi") as! Interactable).event = e//Event.init(test: 1)
         (self.childNode(withName: "Green boi") as! Interactable).boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
@@ -161,7 +178,7 @@ class GameScene: SKScene {
         self.addChild(Interactable.init(name: "Orange boi", body: Util.createRect(w: 75, h: 75, x: 0, y: 0, color: .orange), x: 0, y: 200))
         (self.childNode(withName: "Orange boi") as! Interactable).event = Event.init(test: 0)
         (self.childNode(withName: "Orange boi") as! Interactable).boxColor = .orange
-        
+        */
         
     }
 
@@ -189,7 +206,7 @@ class GameScene: SKScene {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let obj: Interactable? = player.canInteract()
+        let obj: Interactable? = player!.canInteract()
         if(EventHandler.inEvent()){
             EventHandler.proceed()
         }

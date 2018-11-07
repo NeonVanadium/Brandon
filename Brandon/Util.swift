@@ -35,4 +35,14 @@ class Util{
         
     }
     
+    static func loadFile(name n: String, extension e: String) -> String{
+        do{ //try and parse the file
+            let path = Bundle.main.path(forResource: n, ofType: e) // file path for file "events.txt"
+            return try String(contentsOfFile: path!, encoding: String.Encoding.ascii)
+        }
+        catch{
+            fatalError("File load failed: \(n).\(e)")
+        }
+    }
+    
 }
