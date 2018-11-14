@@ -10,6 +10,7 @@
 		560B80392190F091007A0E7C /* events.txt in Resources */ = {isa = PBXBuildFile; fileRef = 560B80382190F091007A0E7C /* events.txt */; };
 		560B803B219377B6007A0E7C /* entities.txt in Resources */ = {isa = PBXBuildFile; fileRef = 560B803A219377B6007A0E7C /* entities.txt */; };
 		560B803D21937DD9007A0E7C /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560B803C21937DD9007A0E7C /* Data.swift */; };
+		56399062219CBA19004805F2 /* GameObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56399061219CBA19004805F2 /* GameObject.swift */; };
 		566014FE214C54180072AB50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566014FD214C54180072AB50 /* AppDelegate.swift */; };
 		56601502214C54180072AB50 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 56601501214C54180072AB50 /* Actions.sks */; };
 		56601504214C54180072AB50 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56601503214C54180072AB50 /* GameScene.swift */; };
@@ -50,6 +51,7 @@
 		560B80382190F091007A0E7C /* events.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = events.txt; sourceTree = "<group>"; };
 		560B803A219377B6007A0E7C /* entities.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = entities.txt; sourceTree = "<group>"; };
 		560B803C21937DD9007A0E7C /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		56399061219CBA19004805F2 /* GameObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameObject.swift; sourceTree = "<group>"; };
 		566014FA214C54180072AB50 /* Brandon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Brandon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		566014FD214C54180072AB50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		56601501214C54180072AB50 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -124,24 +126,25 @@
 			isa = PBXGroup;
 			children = (
 				566014FD214C54180072AB50 /* AppDelegate.swift */,
+				5660150A214C54190072AB50 /* Assets.xcassets */,
 				56D61E3A2188FC9C007121FE /* GameScene.sks */,
 				56601501214C54180072AB50 /* Actions.sks */,
-				56601503214C54180072AB50 /* GameScene.swift */,
-				56601505214C54180072AB50 /* GameViewController.swift */,
 				56601507214C54180072AB50 /* Main.storyboard */,
-				5660150A214C54190072AB50 /* Assets.xcassets */,
 				5660150C214C54190072AB50 /* LaunchScreen.storyboard */,
 				5660150F214C54190072AB50 /* Info.plist */,
-				56C28ECC216D4A0D003F2B48 /* Interactable.swift */,
-				56C4DB382177C51D0061F94A /* DialogueBox.swift */,
+				56601505214C54180072AB50 /* GameViewController.swift */,
+				56601503214C54180072AB50 /* GameScene.swift */,
 				56C4DB3A2177C7C40061F94A /* Util.swift */,
+				56C4DB382177C51D0061F94A /* DialogueBox.swift */,
+				56C28ECC216D4A0D003F2B48 /* Interactable.swift */,
 				56C4DB3C217E6E6F0061F94A /* Player.swift */,
-				56C4DB402180FDE90061F94A /* Event.swift */,
-				56D61E382188FBC0007121FE /* Map.txt */,
-				56D61E40218A3875007121FE /* EventHandler.swift */,
-				560B80382190F091007A0E7C /* events.txt */,
-				560B803A219377B6007A0E7C /* entities.txt */,
 				560B803C21937DD9007A0E7C /* Data.swift */,
+				56C4DB402180FDE90061F94A /* Event.swift */,
+				56D61E40218A3875007121FE /* EventHandler.swift */,
+				56399061219CBA19004805F2 /* GameObject.swift */,
+				56D61E382188FBC0007121FE /* Map.txt */,
+				560B803A219377B6007A0E7C /* entities.txt */,
+				560B80382190F091007A0E7C /* events.txt */,
 			);
 			path = Brandon;
 			sourceTree = "<group>";
@@ -303,6 +306,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56399062219CBA19004805F2 /* GameObject.swift in Sources */,
 				56C4DB412180FDE90061F94A /* Event.swift in Sources */,
 				560B803D21937DD9007A0E7C /* Data.swift in Sources */,
 				56601504214C54180072AB50 /* GameScene.swift in Sources */,

@@ -1,3 +1,6 @@
-/SAMPLE
+/TEST CONVERSATION
 +create box
 -orange boi;hello
+/TYSON SAYS HIS NAME IS TYSON
+-Tyson;My name is Tyson.
+-Brandon;My name is not Tyson

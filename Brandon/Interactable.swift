@@ -23,11 +23,14 @@ class Interactable: SKNode {
         
         name = String(components[0])
         
-        var b = SKSpriteNode.init(imageNamed: String(components[1]));
+        let b = SKSpriteNode.init(imageNamed: String(components[1]));
+        b.size = CGSize.init(width: 100, height: 100)
         b.physicsBody = SKPhysicsBody.init(rectangleOf: b.size)
-        setBody(b)
+        b.physicsBody?.affectedByGravity = false
+        b.physicsBody?.allowsRotation = false
+        b.physicsBody?.isDynamic = false
         
-        //TODO Create physics body
+        setBody(b)
         
     }
     

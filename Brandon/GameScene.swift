@@ -28,7 +28,6 @@ class GameScene: SKScene {
         
         self.lastUpdateTime = 0
         
-        
         Data.setupEntities()
         Data.setupEvents()
         
@@ -161,14 +160,14 @@ class GameScene: SKScene {
         let e = Event.init("Documents/xcode projects/Brandon/Brandon/events.txt")
         
         self.addChild(Data.entities["Tyson"]!);
-        Data.entities["Tyson"]!.event = e
-        Data.entities["Tyson"]!.position = CGPoint.init(x: 0, y: -200)
-        Data.entities["Tyson"]!.boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
+        (Data.entities["Tyson"]! as! Interactable).event = e
+        (Data.entities["Tyson"]! as! Interactable).position = CGPoint.init(x: 0, y: 200)
+        (Data.entities["Tyson"]! as! Interactable).boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
         
         self.addChild(Data.entities["Blue"]!);
-        Data.entities["Blue"]!.event = e
-        Data.entities["Blue"]!.position = CGPoint.init(x: 0, y: -200)
-        Data.entities["Blue"]!.boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
+        (Data.entities["Blue"]! as! Interactable).event = e
+        (Data.entities["Blue"]! as! Interactable).position = CGPoint.init(x: 0, y: -200)
+        (Data.entities["Blue"]! as! Interactable).boxColor = UIColor.init(red: 0, green: 0, blue: 50, alpha: 10)
         
         /*
         self.addChild(Interactable.init(name: "Green boi", body: Util.createRect(w: 75, h: 75, x: 0, y: 0, color: .green), x: 0, y: -200))

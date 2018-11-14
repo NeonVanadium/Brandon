@@ -13,15 +13,12 @@ class Event{
     private var parts: [AnyObject] = [AnyObject]()
     var expires: Bool = true//Is this conversation repeatable?
     
-    init(_ fromFile: String){
-        
-        let string = Util.loadFile(name: "events", extension: "txt")
+    init(_ string: String){
         
         for substring in string.split(separator: "\n"){
             
             let cur = String(substring)
             
-            //if(str.starts(with: "/")){}
             if(cur.starts(with: "+")){
                 print(cur)
             }
