@@ -31,20 +31,19 @@ class GameScene: SKScene {
         Data.setupEntities()
         Data.setupEvents()
         
+        
         initMap() //sets up map
+        
         player = Data.entities["Brandon"] as! Player
+        player!.letBeDynamic()
         
         let camera = SKCameraNode.init()
-        
-        /*camera.addChild(console)
-        console.position.y = 300*/
-        
-        player!.letBeDynamic()
     
         player!.addChild(camera) //locks camera to player
         self.addChild(player!) //puts player in the scene
         self.camera = camera //sets main camera to that assinged to the player
-        self.camera?.addChild(box) //assigns dialogue box to camera
+        player!.addChild(box) //assigns dialogue box to camera
+        
         
         initMoveStick() //sets up the move stick
         
@@ -168,17 +167,6 @@ class GameScene: SKScene {
         (Data.entities["Blue"]! as! Interactable).event = e
         (Data.entities["Blue"]! as! Interactable).position = CGPoint.init(x: 0, y: -200)
         (Data.entities["Blue"]! as! Interactable).boxColor = UIColor.init(red: 0, green: 0, blue: 50, alpha: 10)
-        
-        /*
-        self.addChild(Interactable.init(name: "Green boi", body: Util.createRect(w: 75, h: 75, x: 0, y: 0, color: .green), x: 0, y: -200))
-        (self.childNode(withName: "Green boi") as! Interactable).event = e//Event.init(test: 1)
-        (self.childNode(withName: "Green boi") as! Interactable).boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
-            
-        self.addChild(Interactable.init(name: "Orange boi", body: Util.createRect(w: 75, h: 75, x: 0, y: 0, color: .orange), x: 0, y: 200))
-        (self.childNode(withName: "Orange boi") as! Interactable).event = Event.init(test: 0)
-        (self.childNode(withName: "Orange boi") as! Interactable).boxColor = .orange
-        */
-        
     }
 
     //MARK: Touch Functions

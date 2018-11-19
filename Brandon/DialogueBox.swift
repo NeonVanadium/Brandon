@@ -13,7 +13,7 @@ class DialogueBox {
     
     private static var body : SKLabelNode = SKLabelNode.init()
     private static var nombre : SKLabelNode = SKLabelNode.init() //spanish for name, since name as a field already exists
-    private static var box : SKShapeNode = SKShapeNode.init()
+    private static var box : SKSpriteNode = SKSpriteNode.init(imageNamed: "dialoguebox.png")
     
     public static func setup() -> SKNode{
         
@@ -36,7 +36,9 @@ class DialogueBox {
         
         body.position = CGPoint.init(x: -width / 2, y: boxHeight / 2)
         
-        box = Util.createRect(w: width * 1.1, h: Double.init(boxHeight), x: 0, y: -height + boxHeight + restraint, color: .gray)
+        //box = Util.createRect(w: width * 1.1, h: Double.init(boxHeight), x: 0, y: -height + boxHeight + restraint, color: .gray)
+        box.size = CGSize.init(width: width * 1.1, height: Double.init(boxHeight))
+        box.position = CGPoint(x: 0, y: -height + boxHeight + restraint)
         box.physicsBody = nil
         
         nombre = SKLabelNode.init(text: "???")
@@ -64,14 +66,14 @@ class DialogueBox {
         body.text = t
         if(s != nil){
             nombre.text = s!.name
-            if(s!.boxColor != nil){
+            /*if(s!.boxColor != nil){
                 box.fillColor = s!.boxColor!
                 box.strokeColor = s!.boxColor!
             }
             else{
                 box.fillColor = .gray
                 box.strokeColor = .gray
-            }
+            }*/
         }
     }
     
@@ -95,10 +97,10 @@ class DialogueBox {
         box.isHidden = false
     }
     
-    static func setColor(_ to: UIColor){
+    /*static func setColor(_ to: UIColor){
         box.fillColor = to
         box.strokeColor = to
-    }
+    }*/
     
     
 }

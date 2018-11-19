@@ -41,12 +41,12 @@ class EventHandler {
     }
     
     static func beginInteraction(with i: Interactable){
-        if(i.boxColor != nil){
+        /*if(i.boxColor != nil){
             DialogueBox.setColor(i.boxColor!)
         }
         else{
             DialogueBox.setColor(.gray)
-        }
+        }*/
         
         DialogueBox.setSpeakerName(i.name!)
         DialogueBox.show()
