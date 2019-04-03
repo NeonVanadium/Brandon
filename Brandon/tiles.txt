@@ -1,0 +1,2 @@
+0,grass.png
+1,sand.png

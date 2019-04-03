@@ -11,9 +11,18 @@ import SpriteKit
 import GameplayKit
 
 class GameViewController: UIViewController {
+    
+    var scene: GameScene?
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        
+        Data.GameViewController = self
+    
+    }
+    
+    func loadScene(){
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.
@@ -21,6 +30,10 @@ class GameViewController: UIViewController {
             
             // Get the SKScene from the loaded GKScene
             if let sceneNode = scene.rootNode as! GameScene? {
+                
+                self.scene = sceneNode
+                
+                sceneNode.viewContoller = self
                 
                 // Copy gameplay related content over to the scene
                 sceneNode.entities = scene.entities
@@ -35,15 +48,22 @@ class GameViewController: UIViewController {
                     
                     view.ignoresSiblingOrder = true
                     
-                    view.showsFPS = true
-                    view.showsNodeCount = true
                 }
             }
         }
     }
+    
+    func toMenu(){
+        self.dismiss(animated: true)
+    }
+    
+    func startCombat(arena name: String, against opponents: [Interactable]){
+        self.performSegue(withIdentifier: "startCombat", sender: self)
+        Data.CombatViewController?.scene!.setup(arena: name, against: opponents)
+    }
 
     override var shouldAutorotate: Bool {
-        return true
+        return false
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -62,4 +82,5 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+    
 }

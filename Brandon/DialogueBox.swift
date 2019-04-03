@@ -11,11 +11,14 @@ import SpriteKit
 
 class DialogueBox {
     
-    private static var body : SKLabelNode = SKLabelNode.init()
-    private static var nombre : SKLabelNode = SKLabelNode.init() //spanish for name, since name as a field already exists
-    private static var box : SKSpriteNode = SKSpriteNode.init(imageNamed: "dialoguebox.png")
+    private static var box : SKLabelNode = SKLabelNode.init()
+    //private static var speechBox : SKLabelNode = SKLabelNode.init()
+    private static var nameLabel : SKLabelNode = SKLabelNode.init()
+    //private static var box : SKNode = SKNode.init() //the old sprite background
+    private static var defaultPosition = CGPoint.zero
+    private static var isSetup = false
     
-    public static func setup() -> SKNode{
+    public static func setup(){
         
         let boxHeight: Double = 300
         let restraint: Double = 100
@@ -23,66 +26,116 @@ class DialogueBox {
         let screen = UIScreen.main.bounds
         let width = Double.init(screen.width) * 1.6
         let height = Double.init(screen.height)
+        /*non-edge-to-edge
+        let width = Double.init(screen.width) * 2
+        let height = Double.init(screen.height) * 1.25
+         */
         
         //create components
         
-        body = SKLabelNode.init()
-        body.lineBreakMode = .byWordWrapping
-        body.numberOfLines = 4
-        body.horizontalAlignmentMode = .left
-        body.verticalAlignmentMode = .top
-        body.preferredMaxLayoutWidth = CGFloat.init(width)
-        body.fontName = "Arial Bold"
+        box.zPosition = 5;
+        box.lineBreakMode = .byWordWrapping
+        box.numberOfLines = 4
+        box.horizontalAlignmentMode = .left
+        box.verticalAlignmentMode = .top
+        box.preferredMaxLayoutWidth = CGFloat.init(width)
+        box.fontName = "Arial Bold"
         
-        body.position = CGPoint.init(x: -width / 2, y: boxHeight / 2)
+        box.position = CGPoint(x: -width / 2, y: -height + boxHeight + restraint)//CGPoint.init(x: -width / 2, y: boxHeight / 2)
+        defaultPosition = box.position
         
-        //box = Util.createRect(w: width * 1.1, h: Double.init(boxHeight), x: 0, y: -height + boxHeight + restraint, color: .gray)
-        box.size = CGSize.init(width: width * 1.1, height: Double.init(boxHeight))
-        box.position = CGPoint(x: 0, y: -height + boxHeight + restraint)
-        box.physicsBody = nil
+        /*
+        speechBox.fontSize = 25
+        speechBox.zPosition = 5;
+        speechBox.position.y = CGFloat(Double(Util.byTiles(1)) * 1.5)
+        speechBox.lineBreakMode = .byWordWrapping
+        speechBox.numberOfLines = 5
+        speechBox.horizontalAlignmentMode = .center
+        speechBox.verticalAlignmentMode = .center
+        speechBox.preferredMaxLayoutWidth = CGFloat.init(width / 2)
+        speechBox.fontName = "Arial Bold"
+        */
+    
+        nameLabel.zPosition = 2;
+        nameLabel.horizontalAlignmentMode = .left
+        nameLabel.verticalAlignmentMode = .top
+        nameLabel.position.y = 30
+        nameLabel.fontName = "Arial Bold"
         
-        nombre = SKLabelNode.init(text: "???")
-        nombre.horizontalAlignmentMode = .left
-        nombre.verticalAlignmentMode = .top
-        nombre.position = CGPoint.init(x: -width / 2, y: boxHeight / 2 + Double.init(nombre.fontSize))
-        nombre.fontName = "Arial Bold"
         
-        
-        //assemble the box
-        box.addChild(body)
-        box.addChild(nombre)
+        box.addChild(nameLabel)
+        //box.addChild(touchPrompt)
         
         hide()
         
-        return box
+        isSetup = true
         
     }
     
+    static func unhookAndReset(){
+        //nameLabel.removeFromParent()
+        box.removeFromParent()
+    }
+    
     static func getBox() -> SKNode{ //returns the box itself
+        
+        if(!isSetup){
+            setup()
+        }
+        else{
+            unhookAndReset()
+        }
+        
         return box
     }
     
-    static func feed(text t: String, speaker s: Interactable?){
-        body.text = t
-        if(s != nil){
-            nombre.text = s!.name
-            /*if(s!.boxColor != nil){
-                box.fillColor = s!.boxColor!
-                box.strokeColor = s!.boxColor!
-            }
-            else{
-                box.fillColor = .gray
-                box.strokeColor = .gray
-            }*/
+    static func feed(line l: Event.Line){
+        
+        if(box.isHidden){
+            show()
         }
+        
+        box.text = l.text
+        
+        if(l.speaker != nil){
+            setSpeakerName(l.speaker!.name!)
+            //nameLabel.text = l.speaker!.name
+        }
+        else{
+            setSpeakerName(l.speakerName!)
+            //nameLabel.text = l.speakerName
+        }
+        
+        //with speech box
+        /*if(l.speaker != nil){ //if the speaker is an on-screen character and not a faceless void
+            
+            if(l.speaker != speechBox.parent){
+                speechBox.removeFromParent()
+                l.speaker?.addChild(speechBox)
+            }
+            
+            box.text = ""
+            setSpeakerName("")
+            speechBox.text = l.text
+            
+        }
+        else{
+            
+            speechBox.text = ""
+            box.text = l.text
+                if(l.speakerName != nil){
+                    nombre.text = l.speakerName;
+                }
+            }
+        }*/
     }
-    
+
     static func setSpeakerName(_ s: String){
-        nombre.text = s
+        nameLabel.text = s
     }
     
     static func setText(_ s: String){
-        body.text = s
+        box.text = s
     }
     
     static func toggleHidden(){
@@ -90,17 +143,13 @@ class DialogueBox {
     }
     
     static func hide(){
+        //speechBox.isHidden = true
         box.isHidden = true
     }
     
     static func show(){
+        //speechBox.isHidden = false
         box.isHidden = false
     }
-    
-    /*static func setColor(_ to: UIColor){
-        box.fillColor = to
-        box.strokeColor = to
-    }*/
-    
     
 }

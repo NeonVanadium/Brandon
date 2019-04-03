@@ -11,6 +11,14 @@ import SpriteKit
 
 class Util{
     
+    static func positionByTileCount(x: Int, y: Int) -> CGPoint { // so that I can say "5 tiles up" rather than "500 pixels up," etc.
+        return CGPoint(x: x * Data.tileSideLength, y: y * Data.tileSideLength)
+    }
+    
+    static func byTiles(_ num: Int) -> Int { //converts a single coordinate from tile count to pixel count
+        return num * Data.tileSideLength
+    }
+    
     static func createRect(w : Double, h: Double, x : Double, y : Double) -> SKShapeNode {
         
         let size = CGSize.init(width: w, height: h)
@@ -33,6 +41,12 @@ class Util{
         rect.strokeColor = color
         return rect
         
+    }
+    
+    static func createOutline(w: Int, h: Int, color: UIColor) -> SKShapeNode{
+        let outline = createRect(w: Double(w), h: Double(h), x: 0.0, y: 0.0)
+        outline.strokeColor = color
+        return outline
     }
     
     static func loadFile(name n: String, extension e: String) -> String{

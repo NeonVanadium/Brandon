@@ -1,5 +1,6 @@
-Brandon;red.png;50,0,0;
-Tyson;green.png;0,50,0;
-Blue;blue.png;0,0,50;
+Brandon;Brandon;
+Jonathan;Brandon;
+Julian;Brandon;
+Ley;Brandon;
+Gwen;Brandon;
 * SWITCH FROM INTERACTABLES TO GAME OBJECTS
-Box;blue.png;

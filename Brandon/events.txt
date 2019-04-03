@@ -1,6 +1,109 @@
-/TEST CONVERSATION
-+create box
--orange boi;hello
-/TYSON SAYS HIS NAME IS TYSON
--Tyson;My name is Tyson.
--Brandon;My name is not Tyson
+*
+COMBATSETUPEVENT
+move Brandon up 3
+wait 2
+darkness night
+
+*
+COMBATTESTER
+repeatable
+fight in beach Jonathan
+
+*
+INTRO_TEXT
+add Jonathan 2 5
+assign Jonathan COMBATTESTER
+say Jonathan test test
+darkness night
+
+*
+aINTRO_TEXT
+rotate Brandon 90
+add Gwen 2 5
+;APRIL 29. 1:30AM. Somewhere in the Atlantic.
+darkness night
+move Gwen down 1
+say Gwen as ??? So that mask did this.
+wait 0.5
+face Gwen right
+say Gwen as ??? ...I wonder if this will go as he plans.
+move Gwen right 2
+move Gwen up 5
+darkness blackout
+remove Gwen
+
+add Jonathan 17 15
+add Ley 15 15
+focus Ley
+darkness night
+
+wait 1
+face Jonathan Ley
+say Jonathan as (MAN) You feel that?
+face Ley Jonathan
+say Ley as (WOMAN) Of course. New arrival.
+face Ley down
+move Jonathan down 4
+face Jonathan left
+wait 0.5
+face Jonathan Ley
+say Jonathan as (MAN) I'll go make sure no one gets him before he wakes up.
+say Ley as (WOMAN) Good idea.
+move Jonathan left 1
+wait 0.4
+say Jonathan as (MAN) Oh no.
+move Ley down 2
+say Ley as (WOMAN) What?
+face Jonathan Ley
+say Jonathan as (MAN) Is Julian on the move?
+wait 0.5
+face Ley left
+wait 0.75
+face Ley Jonathan
+say Ley as (WOMAN) Yeah. I can feel him.
+face Jonathan left
+say Jonathan as (MAN) Oh no.
+move Jonathan left 5
+darkness blackout
+
+focus Brandon
+approach Julian Brandon up 2
+darkness night
+say Julian A new one? Perhaps he can...
+say Jonathan as (MAN) Julian!
+remove Jonathan
+add Jonathan 4 10
+move Jonathan down 4
+face Julian Jonathan
+say Julian Not now, Jonathan!
+rotate Brandon 0
+face Brandon Julian
+wait 0.5
+face Brandon left
+wait 0.2
+face Brandon down
+wait 0.2
+face Brandon Julian
+say Brandon as "Arrival" Wh- What?
+say Julian I'm trying to get us off of this island!
+say Jonathan We all are, but the last arrival you took died! I won't let you do that again.
+face Julian Brandon
+wait 0.4
+face Julian Jonathan
+wait 0.2
+face Julian Brandon
+say Julian Oh, to hell with it.
+move Julian down 1
+fight in beach Julian
+move Julian up 2
+face Julian Brandon
+wait 0.3
+face Julian Jonathan
+say Julian ... ... ...
+wait 0.4
+remove Julian
+move Jonathan down 2
+face Jonathan Brandon
+say Jonathan That was Julian.
+say Jonathan nsnsfionsiofnesiofnes tattoooooo
+wait 0

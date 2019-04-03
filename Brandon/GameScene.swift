@@ -14,41 +14,69 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
+    var viewContoller : GameViewController?
     private var lastUpdateTime : TimeInterval = 0
     private var player : Player?
     private var touchOrigin : CGPoint?
     private var vector : simd_float2 = simd_float2.init() //the movement vector
     private var moveStick : SKShapeNode = SKShapeNode.init(circleOfRadius: 80)
-    //private var console: SKLabelNode = SKLabelNode.init(text: "")
-    private var box: SKNode = DialogueBox.setup() //the dialogue box
+    private var box: SKNode = DialogueBox.getBox() //the dialogue box
     private var moved: Bool = false
-    
+    private var nightFilter = Util.createRect(w: Double(UIScreen.main.bounds.width) * 2, h: Double(UIScreen.main.bounds.height) * 2, x: 0, y: 0, color: .black)
+    private var touchPrompt = EventHandler.getTouchPrompt()
     
     override func sceneDidLoad() {
         
         self.lastUpdateTime = 0
         
+        //uses the methods on the data class to load and store all assets
         Data.setupEntities()
         Data.setupEvents()
+        Data.loadTiles()
+        Data.parseMaps()
         
+        loadScene()
         
+    }
+    
+    func loadScene(){
         initMap() //sets up map
         
-        player = Data.entities["Brandon"] as! Player
+        //puts player on the map
+        player = Data.entities["Brandon"] as? Player
         player!.letBeDynamic()
+        player?.position = Util.positionByTileCount(x: 2, y: 2)
         
         let camera = SKCameraNode.init()
-    
+        
         player!.addChild(camera) //locks camera to player
         self.addChild(player!) //puts player in the scene
         self.camera = camera //sets main camera to that assinged to the player
-        player!.addChild(box) //assigns dialogue box to camera
+        camera.addChild(box) //assigns dialogue box to camera
         
+    
+        camera.addChild(touchPrompt)
+        
+        
+        //TODO feel like this should be done in event handler
+        touchPrompt.position = box.position
+        touchPrompt.position.x = ((UIScreen.main.bounds.width / 2) + touchPrompt.texture!.size().width)
+        touchPrompt.position.y -= 100
+        
+        nightFilter.alpha = 1
+        nightFilter.physicsBody = nil
+        nightFilter.zPosition = 4
+        
+        camera.addChild(nightFilter)
         
         initMoveStick() //sets up the move stick
         
         nilTouchOrigin()
         
+        EventHandler.setScene(self)
+        EventHandler.hostEvent(Data.events["INTRO_TEXT"]!)
+        
+        Data.loadMap("island", toScene: self)
     }
     
     //MARK: Custom
@@ -62,6 +90,9 @@ class GameScene: SKScene {
         incircle.fillColor = SKColor.gray
         moveStick.addChild(incircle)
         
+        incircle.zPosition = 5;
+        moveStick.zPosition = 4;
+        
         player!.addChild(moveStick)
     }
     
@@ -70,7 +101,8 @@ class GameScene: SKScene {
         let prp = playerRelativePosition(from: pos)
         touchOrigin = pos //this is pos because touchOrigin is measured from scene, not player
         moveStick.position = prp
-        moveStick.children[0].position.x = 0; moveStick.children[0].position.y = 0;
+        //moveStick.children[0].position.x = 0; moveStick.children[0].position.y = 0;
+        moveStick.children[0].position = CGPoint.zero
         //moveStick.isHidden = false
         
     }
@@ -83,7 +115,7 @@ class GameScene: SKScene {
         vector.x = 0; vector.y = 0;
         
         moveStick.isHidden = true
-        moveStick.children[0].position = moveStick.position
+        moveStick.children[0].position = CGPoint.zero
         
     }
     
@@ -96,8 +128,13 @@ class GameScene: SKScene {
         
         let motion = getSpeed()
         
-        moveStick.children[0].position.x = motion.dx * 10
-        moveStick.children[0].position.y = motion.dy * 10
+        if(motion == CGVector.zero){
+            moveStick.children[0].position = CGPoint.zero
+        }
+        else{
+            moveStick.children[0].position.x = motion.dx * 10
+            moveStick.children[0].position.y = motion.dy * 10
+        }
      
     }
     
@@ -109,66 +146,81 @@ class GameScene: SKScene {
         
         let minDistance: Float = 20
         
-        if(abs(vector[0]) > minDistance || abs(vector[1]) > minDistance) {
+        if(abs(vector[0]) > minDistance || abs(vector[1]) > minDistance) { //if the stick is moved enough to move the player
             
             moveStick.isHidden = false;
-            player!.run(.move(by: getSpeed(), duration: 0))
+            player!.move(by: getSpeed(), duration: 0)
+            //player!.run(.move(by: getSpeed(), duration: 0))
             box.isHidden = true
             moved = true
+            
+            
+            if(abs(vector[0]) > abs(vector[1])){ //if the player is moving their finger more horizontally
+                if (vector[0] > 0){ //if moving right
+                    player!.face(.right)
+                }
+                else if (vector[0] < 0){
+                    player!.face(.left)
+                }
+            }
+            else{ //if the player is moving their finger more vertically
+                if (vector[1] > 0){
+                    player!.face(.up)
+                }
+                else if (vector[1] < 0){
+                    player!.face(.down)
+                }
+            }
             
         }
     }
     
-    func getSpeed() -> CGVector{
+    func getSpeed() -> CGVector{ //using the vector, determines how fast the player should be moving
         
-        let max: CGFloat = 6
+        let max = CGFloat.init(GameObject.RUNSPEED)
         let switchPoint: Float = 100 //when walking turns to running
+        let minDistance: Float = 20
         
-        var x: CGFloat = 0
-        var y: CGFloat = 0
+        if(!(abs(vector[0]) > minDistance || abs(vector[1]) > minDistance)){
+            return CGVector.zero
+        }
+        
+        var deltax: CGFloat = 0
+        var deltay: CGFloat = 0
         
         if(abs(vector[0]) > abs(vector[1])){ //if vector's x is greater than its y
 
             if(abs(vector[0]) > switchPoint){
-                x = max * CGFloat.init((vector[0] / abs(vector[0])))
+                deltax = max * CGFloat.init((vector[0] / abs(vector[0])))
             }
             else{
-                x = max / 2 * CGFloat.init((vector[0] / abs(vector[0])))
+                deltax = max / 2 * CGFloat.init((vector[0] / abs(vector[0])))
             }
         }
         else{
 
             if(abs(vector[1]) > switchPoint){
-                y = max * CGFloat.init((vector[1] / abs(vector[1])))
+                deltay = max * CGFloat.init((vector[1] / abs(vector[1])))
             }
             else{
-                y = max / 2 * CGFloat.init((vector[1] / abs(vector[1])))
+                deltay = max / 2 * CGFloat.init((vector[1] / abs(vector[1])))
             }
         }
         
-        return CGVector.init(dx: x, dy: y)
+        return CGVector.init(dx: deltax, dy: deltay)
         
     }
     
-    func initMap(){
-        self.addChild(Util.createRect(w: 100, h: 900, x: -300, y: 0))
-        self.addChild(Util.createRect(w: 100, h: 900, x: 300, y: 0))
-        self.addChild(Util.createRect(w: 600, h: 100, x: 0, y: 450))
-        self.addChild(Util.createRect(w: 600, h: 100, x: 0, y: -450))
-        
-        let e = Event.init("Documents/xcode projects/Brandon/Brandon/events.txt")
-        
-        self.addChild(Data.entities["Tyson"]!);
-        (Data.entities["Tyson"]! as! Interactable).event = e
-        (Data.entities["Tyson"]! as! Interactable).position = CGPoint.init(x: 0, y: 200)
-        (Data.entities["Tyson"]! as! Interactable).boxColor = UIColor.init(red: 0, green: 50, blue: 0, alpha: 10)
-        
-        self.addChild(Data.entities["Blue"]!);
-        (Data.entities["Blue"]! as! Interactable).event = e
-        (Data.entities["Blue"]! as! Interactable).position = CGPoint.init(x: 0, y: -200)
-        (Data.entities["Blue"]! as! Interactable).boxColor = UIColor.init(red: 0, green: 0, blue: 50, alpha: 10)
-    }
+    func initMap(){ } //currently unused
 
+    func adjustDarkness(_ to: CGFloat){
+        
+        nightFilter.alpha = to
+        //Data.darkness = 0.4
+        //nightFilter.isHidden = false
+    }
+    
+    
     //MARK: Touch Functions
     
     func touchDown(atPoint pos : CGPoint) {
@@ -193,17 +245,22 @@ class GameScene: SKScene {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
         let obj: Interactable? = player!.canInteract()
-        if(EventHandler.inEvent()){
+        
+        if(EventHandler.inEvent() && !EventHandler.isHappeningActive()){
+            EventHandler.hideTouchPromptIfVisible()
             EventHandler.proceed()
         }
         else if(!moved && obj != nil){
-            if(box.isHidden) {
-                EventHandler.beginInteraction(with: obj!)
+            if(box.isHidden) { //if a dialogue is not curruntly active
+                obj?.lookAt(objectFacing: player!.facing)
+                EventHandler.beginInteraction(with: obj!, fromScene: self)
                 box.isHidden = false
             }
             else { DialogueBox.hide() }
         }
+        
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
@@ -214,7 +271,9 @@ class GameScene: SKScene {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
-        movePlayerToken()
+        if(!EventHandler.isLocked()){
+            movePlayerToken()
+        }
         
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {

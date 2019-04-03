@@ -9,67 +9,67 @@
 import Foundation
 import SpriteKit
 
-class Interactable: SKNode {
+class Interactable: GameObject {
     
-    private var body: SKNode?
-    var boxColor: UIColor?
     var event: Event?
+    var health: Int = 10
+    var energy: Int = 5
+    static var maxEnergy: Int = 5
+    var isAlly: Bool = false //for use in combat. True if in the allies array. False if in the enemies array.
+    var val: Int? //for use in combat. The index this interactable is in in the array.
     
-    init(_ line: String){
+    func takeDamage(_ d: Int){
         
-        super.init()
+        health -= d
         
-        let components = line.split(separator: ";")
-        
-        name = String(components[0])
-        
-        let b = SKSpriteNode.init(imageNamed: String(components[1]));
-        b.size = CGSize.init(width: 100, height: 100)
-        b.physicsBody = SKPhysicsBody.init(rectangleOf: b.size)
-        b.physicsBody?.affectedByGravity = false
-        b.physicsBody?.allowsRotation = false
-        b.physicsBody?.isDynamic = false
-        
-        setBody(b)
+        (childNode(withName: "healthLabel")! as! SKLabelNode).text = "\(health)"
         
     }
     
-   /* init(name n : String, body b : SKShapeNode, x: Int, y: Int) {
-
-        super.init()
-        setBody(b)
-        name = n;
-        setPosition(x, y)
+    func attack(_ target: Interactable){
+        
+        if(energy >= 3){
+            
+            let motionDuration = 0.5
+            
+            energy -= 3
+            
+            self.run(.move(to: target.position, duration: motionDuration), completion: {
+                    
+                        target.takeDamage(1)
+                    
+                        if(self.isAlly){
+                            self.run(.move(to: CGPoint(x: Util.byTiles(-2), y: 0), duration: motionDuration))
+                        }
+                        else if(!self.isAlly){
+                            self.run(.move(to: CGPoint(x: Util.byTiles(2), y: 0), duration: motionDuration))
+                        }
+                    
+                    })
+            
+            
+            
+            (childNode(withName: "energyLabel")! as! SKLabelNode).text = "\(energy)/\(Interactable.maxEnergy)"
+            
+        }
         
     }
     
-    init(name n: String){
-        super.init()
-        name = n;
-    }*/
-    
-    func setBody(_ b:SKNode){
+    func modifyEnergy(_ num: Int){
         
-        let physbod = b.physicsBody
-        b.physicsBody = nil
+        if(energy + num > Interactable.maxEnergy){
+            
+            energy = Interactable.maxEnergy
+            
+        }
+        else{
+            
+            energy += num
+            
+        }
         
-        self.addChild(b)
+        (childNode(withName: "energyLabel")! as! SKLabelNode).text = "\(energy)/\(Interactable.maxEnergy)"
         
-        self.physicsBody = physbod
     }
-    
-    func setPosition(_ x: Int, _ y: Int){
-        position = CGPoint.init(x: x, y: y)
-    }
-    
-    func letBeDynamic(){
-        self.physicsBody?.isDynamic = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-   
     
 }
