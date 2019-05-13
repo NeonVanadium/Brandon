@@ -17,6 +17,18 @@ class EventHandler {
     private static var touchPrompt = SKSpriteNode.init()
     private static var touchPromptSetup = false
     
+    private static var notifyLabel = SKLabelNode.init()
+    private static var notifyLabelSetup = false
+    private static var notifyQueue = [String].init()
+    
+    private static var exclamation: SKSpriteNode!
+    private static var question: SKSpriteNode!
+    private static var ellipse: SKSpriteNode!
+    private static var exclamationFrames: [SKTexture]!
+    private static var questionFrames: [SKTexture]!
+    private static var ellipseFrames: [SKTexture]!
+    private static let postEmoteWait: TimeInterval = 0.2 //how long (seconds) after emoting the icon will remain
+    
     static func setScene(_ scene: SKScene){
         curScene = scene;
     }
@@ -37,13 +49,114 @@ class EventHandler {
         hostEvent(Data.events[n]!)
     }
     
-    static func initTouchPrompt(){
+    private static func initPuntuationAnims(){
+        
+        let exatlas = SKTextureAtlas.init(named: "exclamation")
+        
+        exclamation = SKSpriteNode.init(texture: exatlas.textureNamed("exclamation0"))
+        exclamation.position = CGPoint(x: 0, y: Util.byTiles(1))
+        exclamation.size.width *= 3
+        exclamation.size.height *= 3
+        exclamation.texture!.filteringMode = .nearest
+        exclamation.zPosition = 4
+        
+        exclamationFrames = [SKTexture].init()
+        
+        for num in 0...3{
+            exclamationFrames.append(exatlas.textureNamed("exclamation\(num)"))
+        }
+        
+        let qatlas = SKTextureAtlas.init(named: "question")
+        
+        question = SKSpriteNode.init(texture: qatlas.textureNamed("question0"))
+        question.position = CGPoint(x: 0, y: Util.byTiles(1))
+        question.size.width *= 3
+        question.size.height *= 3
+        question.texture!.filteringMode = .nearest
+        question.zPosition = 4
+        
+        questionFrames = [SKTexture].init()
+        
+        for num in 0...5{
+            questionFrames.append(qatlas.textureNamed("question\(num)"))
+        }
+        
+        let elatlas = SKTextureAtlas.init(named: "ellipse")
+        
+        ellipse = SKSpriteNode.init(texture: elatlas.textureNamed("ellipse0"))
+        ellipse.position = CGPoint(x: 0, y: Util.byTiles(1))
+        ellipse.size.width *= 3
+        ellipse.size.height *= 3
+        ellipse.texture!.filteringMode = .nearest
+        ellipse.zPosition = 4
+        
+        ellipseFrames = [SKTexture].init()
+        
+        for num in 0...3{
+            ellipseFrames.append(elatlas.textureNamed("ellipse\(num)"))
+        }
+        
+    }
+    
+    static func suprise(_ i: Interactable){
+        
+        if(exclamation == nil){
+            initPuntuationAnims()
+        }
+        
+        i.addChild(exclamation)
+        
+        exclamation.run(.animate(with: exclamationFrames, timePerFrame: 0.15), completion: {
+            
+            exclamation.run(.wait(forDuration: postEmoteWait), completion: {
+                     exclamation.removeFromParent(); EventHandler.proceed()
+                })
+    
+        })
+    }
+    
+    static func confuse(_ i: Interactable){
+        
+        if(question == nil){
+            initPuntuationAnims()
+        }
+        
+        i.addChild(question)
+        
+        question.run(.animate(with: questionFrames, timePerFrame: 0.05), completion: {
+            
+            question.run(.wait(forDuration: postEmoteWait), completion: {
+                question.removeFromParent(); EventHandler.proceed()
+            })
+            
+        })
+    }
+    
+    static func ponder(_ i: Interactable){
+        
+        if(ellipse == nil){
+            initPuntuationAnims()
+        }
+        
+        i.addChild(ellipse)
+        
+        ellipse.run(.animate(with: ellipseFrames, timePerFrame: 0.15), completion: {
+            ellipse.run(.wait(forDuration: postEmoteWait), completion: {
+                ellipse.removeFromParent(); EventHandler.proceed()
+            })
+            
+        })
+    }
+    
+    private static func initTouchPrompt(){
         
         touchPrompt.texture = SKTextureAtlas.init(named: "tap prompt").textureNamed("0")
         touchPrompt.size = .init(width: 30, height: 45)
         touchPrompt.texture?.filteringMode = .nearest
          
-        touchPrompt.zPosition = 6
+        touchPrompt.zPosition = 98
+        
+        touchPrompt.position = CGPoint(x: Util.getScreenPosition(.right), y: Util.getScreenPosition(.bottom) - (CGFloat(Util.byTiles(1)) * 1.5))
         
         var frames = [SKTexture].init()
         let atlas = SKTextureAtlas.init(named: "tap prompt")
@@ -68,6 +181,7 @@ class EventHandler {
     static func reset(){ //resets handler to default, with no loaded event
         curEvent = nil
         pointInEvent = 0
+        DialogueBox.setSpeakerName("")
         DialogueBox.hide()
     }
     
@@ -92,26 +206,34 @@ class EventHandler {
     
     static func proceed(){ //move to the next step in the event, ending if there are none.
         
-        if(curEvent == nil || pointInEvent >= curEvent!.numParts()){ //if all the parts of this event have already been run
-            hideTouchPromptIfVisible()
-            reset()
+        if(DialogueBox.typingText != nil){ //cancels the typing of text, shows the whole thing immediately
+            DialogueBox.setText(DialogueBox.typingText!)
+            touchPrompt.isHidden = false
         }
-        else{ //if there are parts to be run
-            
-            let part = curEvent!.getPart(pointInEvent)
-            
-            pointInEvent += 1
-            
-            if(part is Event.Line){
-                DialogueBox.feed(line: part as! Event.Line)
-            }
-            else if(part is Event.Happening){
-                runHappening(part as! Event.Happening)
-            
-            }
-            
-        }
+        else {
         
+            DialogueBox.clear()
+            
+            if(curEvent == nil || pointInEvent >= curEvent!.numParts()){ //if all the parts of this event have already been run
+                hideTouchPromptIfVisible()
+                reset()
+            }
+            else{ //if there are parts to be run
+                
+                let part = curEvent!.getPart(pointInEvent)
+                
+                pointInEvent += 1
+                
+                if(part is Event.Line){
+                    DialogueBox.feed(line: part as! Event.Line)
+                }
+                else if(part is Event.Happening){
+                    runHappening(part as! Event.Happening)
+                
+                }
+                
+            }
+        }
     }
     
     static func proceedIfLast(){
@@ -124,7 +246,12 @@ class EventHandler {
     
     static func beginInteraction(with i: Interactable, fromScene s: GameScene){
 
-        DialogueBox.setSpeakerName(i.name!)
+        let player = Data.GameViewController!.scene!.player!
+        if i == player.getTaskTarget() { //ends the current task if the interactable is the task's goal
+            player.removeTask()
+        }
+        
+        //DialogueBox.setSpeakerName(i.name!)
         
         if(i.event != nil){
             hostEvent(i.event!)
@@ -158,4 +285,49 @@ class EventHandler {
         return touchPrompt
     }
     
+    static func notify(_ txt: String, in scene: SKScene){
+        if(!notifyLabelSetup){
+            setupNotifyLabel()
+        }
+        
+        if(notifyLabel.parent != nil){
+            notifyQueue.append(txt) //queues up notifications that are sent while another is already being displayed.
+        }
+        else{
+        
+            notifyLabel.text = txt
+            
+            curScene!.camera!.addChild(notifyLabel)
+            
+            notifyLabel.run(.fadeIn(withDuration: 0.5), completion: {
+                notifyLabel.run(.wait(forDuration: 4), completion: {
+                    notifyLabel.run(.fadeOut(withDuration: 1), completion: {
+                        notifyLabel.removeFromParent()
+                        if !notifyQueue.isEmpty { //if there are notifications that occured simultaneously waiting to be shown
+                            notify(notifyQueue.popLast()!, in: scene)
+                        }
+                    } )
+                })
+            })
+            
+        }
+
+    }
+    
+    private static func setupNotifyLabel(){
+        notifyLabel.horizontalAlignmentMode = .center
+        notifyLabel.verticalAlignmentMode = .center
+        notifyLabel.fontSize = 35
+        notifyLabel.fontName = "Arial Bold"
+        notifyLabel.lineBreakMode = .byWordWrapping
+        notifyLabel.preferredMaxLayoutWidth = UIScreen.main.bounds.width
+        notifyLabel.numberOfLines = 3
+        notifyLabel.color = .white
+        notifyLabel.zPosition = 100
+        
+        notifyLabelSetup = true
+    }
+    
 }
+
+

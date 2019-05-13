@@ -59,4 +59,38 @@ class Util{
         }
     }
     
+    static func toOneDecimal(_ double: Double) -> Double{
+        
+        return round(10 * double) / 10
+        
+    }
+    
+    static func getScreenPosition(_ p: screenPosition) -> CGFloat{
+        
+        let sdim = UIScreen.main.bounds //sdim for screen dimensions
+        
+        if p == .bottom {
+            return -1 * ((sdim.height / 2) - 1)
+        }
+        else if p == .center {
+            return 0
+        }
+        else if p == .top {
+            return (sdim.height / 2) - 1
+        }
+        else if p == .right {
+            return (sdim.width / 2) - 1
+        }
+        else{
+            return -1 * ((sdim.width / 2) - 1)
+        }
+        
+    }
+    
+}
+
+enum screenPosition{
+    
+    case top, center, bottom, right, left
+    
 }

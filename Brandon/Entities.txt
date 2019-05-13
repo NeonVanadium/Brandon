@@ -1,6 +1,6 @@
-Brandon;Brandon;
-Jonathan;Brandon;
-Julian;Brandon;
-Ley;Brandon;
-Gwen;Brandon;
+Brandon;Brandon;0;relentless
+Jonathan;Jonathan;3;measured
+Julian;Brandon;1;measured
+Ley;Brandon;3;relentless
+Gwen;Brandon;4;measured
 * SWITCH FROM INTERACTABLES TO GAME OBJECTS

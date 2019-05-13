@@ -16,7 +16,8 @@ class GameScene: SKScene {
     
     var viewContoller : GameViewController?
     private var lastUpdateTime : TimeInterval = 0
-    private var player : Player?
+    
+    var player : Player?
     private var touchOrigin : CGPoint?
     private var vector : simd_float2 = simd_float2.init() //the movement vector
     private var moveStick : SKShapeNode = SKShapeNode.init(circleOfRadius: 80)
@@ -51,25 +52,19 @@ class GameScene: SKScene {
         
         player!.addChild(camera) //locks camera to player
         self.addChild(player!) //puts player in the scene
-        self.camera = camera //sets main camera to that assinged to the player
+        self.camera = camera //sets main camera to that assigned to the player
         camera.addChild(box) //assigns dialogue box to camera
         
-    
         camera.addChild(touchPrompt)
-        
-        
-        //TODO feel like this should be done in event handler
-        touchPrompt.position = box.position
-        touchPrompt.position.x = ((UIScreen.main.bounds.width / 2) + touchPrompt.texture!.size().width)
-        touchPrompt.position.y -= 100
         
         nightFilter.alpha = 1
         nightFilter.physicsBody = nil
-        nightFilter.zPosition = 4
+        nightFilter.zPosition = 95
         
         camera.addChild(nightFilter)
         
         initMoveStick() //sets up the move stick
+        PauseButton.create(inScene: self)
         
         nilTouchOrigin()
         
@@ -149,9 +144,9 @@ class GameScene: SKScene {
         if(abs(vector[0]) > minDistance || abs(vector[1]) > minDistance) { //if the stick is moved enough to move the player
             
             moveStick.isHidden = false;
-            player!.move(by: getSpeed(), duration: 0)
             //player!.run(.move(by: getSpeed(), duration: 0))
             box.isHidden = true
+            (camera!.childNode(withName: "pauseButton") as! PauseButton).closeIfOpen()
             moved = true
             
             
@@ -171,6 +166,8 @@ class GameScene: SKScene {
                     player!.face(.down)
                 }
             }
+            
+            player!.move(by: getSpeed(), duration: 0)
             
         }
     }
@@ -220,6 +217,21 @@ class GameScene: SKScene {
         //nightFilter.isHidden = false
     }
     
+    func fadeInBlack(over t: TimeInterval){
+        
+        //TODO-make fade
+        
+        nightFilter.run(.fadeIn(withDuration: t))
+    }
+    
+    private func innerFadeIn(){
+        
+    }
+    
+    func fadeOutBlack(over t: TimeInterval){
+        nightFilter.run(.fadeOut(withDuration: t))
+    }
+    
     
     //MARK: Touch Functions
     
@@ -232,6 +244,7 @@ class GameScene: SKScene {
     }
     
     func touchUp(atPoint pos : CGPoint) {
+        player!.standStill()
         nilTouchOrigin()
     }
  
@@ -248,6 +261,17 @@ class GameScene: SKScene {
         
         let obj: Interactable? = player!.canInteract()
         
+        
+        for t in touches {
+            
+            let touchPoint = t.location(in: camera!)
+            
+            self.touchUp(atPoint: touchPoint)
+            
+            (camera!.childNode(withName: "pauseButton")! as! PauseButton).process(point: touchPoint) //checks all actions related to the pause menu or the pause button
+            
+        }
+        
         if(EventHandler.inEvent() && !EventHandler.isHappeningActive()){
             EventHandler.hideTouchPromptIfVisible()
             EventHandler.proceed()
@@ -261,7 +285,7 @@ class GameScene: SKScene {
             else { DialogueBox.hide() }
         }
         
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

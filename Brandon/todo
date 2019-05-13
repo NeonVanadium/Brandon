@@ -1,6 +1,8 @@
-Animate text box (don't display text all at one, do it one at a time)
-Something that puts a picture over the scene (a cutscene sorta deal) but doesn't cover the dialogue box
-day-night modes for cool ambience
 water tile
-character animations
-arrow for dialogue box indicating that a player tap is being awaited
+when combat moves would overlap, create a queue or some shit and run through them chronologically so people don't yeet into each other center screen
+the lane thing
+black cutscene bounds thing
+fix animation skippy boi (brute fix: repeat the middle frame, have 16 total frames instead of 12)
+combat UI: unsuck
+task direction arrow
+make sure tap prompt remains visible after text printing is skipped

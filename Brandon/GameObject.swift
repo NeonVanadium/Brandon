@@ -14,13 +14,13 @@ class GameObject: SKNode{
     private var atlas: SKTextureAtlas?
     private var body: SKSpriteNode = SKSpriteNode.init()
     public var facing: Facing = Facing.down
-    var walkDown: [SKTexture]?
-    var walkUp: [SKTexture]?
-    var walkLeft: [SKTexture]?
-    var walkRight: [SKTexture]?
-    //private var textures: [SKTexture] = [SKTexture].init()
-    private var atlasName: String = "Brandon";
-    var moving: Bool = false
+    var walkDown: [SKTexture]!
+    var walkUp: [SKTexture]!
+    var walkLeft: [SKTexture]!
+    var walkRight: [SKTexture]!
+    private var curAnim: [SKTexture]!
+    private var atlasName: String = "Brandon"
+    private var moving: Bool = false
     
     public static var RUNSPEED: Int = 8;
     public static var WALKSPEED: Int = 3;
@@ -30,6 +30,7 @@ class GameObject: SKNode{
         let components = line.split(separator: ";")
         
         super.init()
+        
         name = String(components[0])
         
         atlasName = String(components[1])
@@ -41,6 +42,7 @@ class GameObject: SKNode{
     
     init(multiframeCopyFrom other: GameObject){
         atlas = other.atlas
+        atlasName = other.atlasName
         
         super.init()
         name = String(other.name!)
@@ -50,15 +52,26 @@ class GameObject: SKNode{
     }
     
     func setup(withAtlas a: SKTextureAtlas){
-        let b = SKSpriteNode.init(texture: atlas!.textureNamed("\(atlasName)01")); // b for body, the sprite node
-        b.anchorPoint = CGPoint(x: 0.5, y: 0.4) //roughly puts feet at bottom of tile. Can be improved.
+        let b = SKSpriteNode.init(texture: atlas!.textureNamed("\(atlasName)1")); // b for body, the sprite node
+        b.anchorPoint = CGPoint(x: 0.5, y: 0.45) //roughly puts feet at bottom of tile. Can be improved.
+        b.size.width *= 0.8
         b.size.width = b.size.width * 5
         b.size.height = b.size.height * 5
         b.texture?.filteringMode = .nearest //non-blurry pixel sprites
-        b.physicsBody = SKPhysicsBody.init(rectangleOf: CGSize.init(width: 80, height: 100))
+        
+        b.physicsBody = SKPhysicsBody.init(rectangleOf: CGSize.init(width: 70, height: 100)) //there's a way to automate this
         b.physicsBody?.affectedByGravity = false
         b.physicsBody?.allowsRotation = false
         b.physicsBody?.isDynamic = false
+        
+        let shadow = SKShapeNode.init(ellipseOf: CGSize(width: b.size.width, height: 30))
+        shadow.zPosition = -1
+        shadow.fillColor = .black
+        shadow.alpha = 0.2
+        shadow.position.y -= CGFloat(Util.byTiles(1) / 2)
+        b.addChild(shadow)
+        
+        setBody(b)
         
         walkDown = [SKTexture].init()
         walkUp = [SKTexture].init()
@@ -66,22 +79,33 @@ class GameObject: SKNode{
         walkRight = [SKTexture].init()
         
         for num in 0...2 {
-            walkDown!.append((atlas?.textureNamed("\(atlasName)\(num)"))!)
+            walkDown!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
         for num in 3...5 {
-            walkUp!.append((atlas?.textureNamed("\(atlasName)\(num)"))!)
+            walkUp!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
         for num in 6...8 {
-            walkLeft!.append((atlas?.textureNamed("\(atlasName)\(num)"))!)
+            walkLeft!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
         for num in 9...11 {
-            walkRight!.append((atlas?.textureNamed("\(atlasName)\(num)"))!)
+            walkRight!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
-        setBody(b)
+        curAnim = walkDown
+        
+        face(.down)
+    }
+    
+    func setupTexture(_ t: SKTexture) -> SKTexture { //sets up textures to be added to the arrays
+        t.filteringMode = .nearest
+        return t
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("How?")
     }
     
     init(staticFrom line: String){
@@ -114,11 +138,12 @@ class GameObject: SKNode{
         
         body = b
         
-        body.physicsBody = nil
-        
         self.addChild(body)
         
+        body.physicsBody = nil
+        
         self.physicsBody = physbod
+    
     }
     
     func setPosition(_ x: Int, _ y: Int){
@@ -129,58 +154,89 @@ class GameObject: SKNode{
         self.physicsBody?.isDynamic = true
     }
     
-    func move(by vector: CGVector, duration d: TimeInterval){
+    func eventMove(by vector: CGVector, duration d: TimeInterval){
         
-        self.run(SKAction.move(by: vector, duration: d))
+        self.run(SKAction.move(by: vector, duration: d), completion: {
+            
+            self.standStill();
+            EventHandler.proceed()
+            Event.stopHappening()
+            
+        } )
         
-        walk()
+        startRunning()
         
     }
     
+    func combatMove(to point: CGPoint, duration d: TimeInterval){
+        self.run(.move(to: point, duration: d), completion: { self.standStill() })
+        
+        startRunning()
+    }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("How?")
+    func move(by vector: CGVector, duration d: TimeInterval){
+        
+        self.run(SKAction.move(by: vector, duration: d), completion: {  } )
+        
+        self.zPosition = 2 - (0.0001 * self.position.y)
+        
+        startRunning()
+        
+    }
+    
+    func standStill(){
+        
+        body.removeAllActions()
+        
+        moving = false
+        
+        body.run(.setTexture(curAnim.prefix(2).last!))
+    }
+    
+    func startRunning(){
+        
+        if(!moving){
+            let frameTime = 0.2
+            body.run(SKAction.repeatForever(.animate(with: curAnim, timePerFrame: frameTime)))
+        }
+        
+        moving = true
+        
     }
     
     func face(_ direction: Facing){
-        facing = direction
         
-        if(facing == .up){
-            body.texture = atlas!.textureNamed("\(atlasName)04")
+        if(direction != facing){
+            
+            moving = false //if moving remains true, startRunning() will not update the anim
+            
+            facing = direction
+            
+            if(facing == .up){
+                curAnim = walkUp!
+            }
+            if(facing == .down){
+                curAnim = walkDown!
+            }
+            if(facing == .left){
+                curAnim = walkLeft!
+            }
+            if(facing == .right){
+                curAnim = walkRight!
+            }
         }
-        if(facing == .down){
-            body.texture = atlas!.textureNamed("\(atlasName)01")
+        
+        if(moving){
+            startRunning()
         }
-        if(facing == .left){
-            body.texture = atlas!.textureNamed("\(atlasName)07")
-        }
-        if(facing == .right){
-            body.texture = atlas!.textureNamed("\(atlasName)10")
+        else{
+            standStill()
         }
         
     }
     
     func rotateSprite(by degrees: Int){
         body.zRotation = CGFloat(degrees)
-    }
-    
-    func walk(){
-        
-        let frameTime = 0.3
-
-        switch facing{
-            
-        case .up:
-            self.run(SKAction.repeatForever(SKAction.animate(with: walkUp!, timePerFrame: frameTime)))
-        case .down:
-            self.run(SKAction.repeatForever(SKAction.animate(with: walkDown!, timePerFrame: frameTime)))
-        case .left:
-            self.run(SKAction.repeatForever(SKAction.animate(with: walkLeft!, timePerFrame: frameTime)))
-        case .right:
-            self.run(SKAction.repeatForever(SKAction.animate(with: walkRight!, timePerFrame: frameTime)))
-            
-        }
-        
     }
     
     func lookAt(objectFacing direction: Facing){
@@ -196,11 +252,16 @@ class GameObject: SKNode{
         if(direction == .right){
             face(.left)
         }
-
     }
 
     public enum Facing{
         case up, down, left, right
     }
+    
+}
+
+protocol multiframe {
+    
+    func face(_ direction: GameObject.Facing)
     
 }

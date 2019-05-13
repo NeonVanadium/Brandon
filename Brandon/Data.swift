@@ -111,7 +111,7 @@ class Data{
                     
                     tile.size = CGSize.init(width: tileSideLength, height: tileSideLength)
                     tile.position = position
-                    tile.zPosition = -5
+                    tile.zPosition = -20
                     
                     scene.addChild(tile)
                     

@@ -1,109 +1,131 @@
 *
-COMBATSETUPEVENT
-move Brandon up 3
-wait 2
-darkness night
-
-*
-COMBATTESTER
-repeatable
-fight in beach Jonathan
-
-*
 INTRO_TEXT
-add Jonathan 2 5
-assign Jonathan COMBATTESTER
-say Jonathan test test
-darkness night
-
-*
-aINTRO_TEXT
 rotate Brandon 90
-add Gwen 2 5
+face Brandon left
+add Julian 4 7
+face Julian up
+assign Julian firstfight
 ;APRIL 29. 1:30AM. Somewhere in the Atlantic.
-darkness night
-move Gwen down 1
-say Gwen as ??? So that mask did this.
-wait 0.5
-face Gwen right
-say Gwen as ??? ...I wonder if this will go as he plans.
-move Gwen right 2
-move Gwen up 5
-darkness blackout
-remove Gwen
 
-add Jonathan 17 15
-add Ley 15 15
-focus Ley
 darkness night
-
-wait 1
-face Jonathan Ley
-say Jonathan as (MAN) You feel that?
-face Ley Jonathan
-say Ley as (WOMAN) Of course. New arrival.
-face Ley down
-move Jonathan down 4
-face Jonathan left
-wait 0.5
-face Jonathan Ley
-say Jonathan as (MAN) I'll go make sure no one gets him before he wakes up.
-say Ley as (WOMAN) Good idea.
-move Jonathan left 1
-wait 0.4
-say Jonathan as (MAN) Oh no.
-move Ley down 2
-say Ley as (WOMAN) What?
-face Jonathan Ley
-say Jonathan as (MAN) Is Julian on the move?
-wait 0.5
-face Ley left
-wait 0.75
-face Ley Jonathan
-say Ley as (WOMAN) Yeah. I can feel him.
-face Jonathan left
-say Jonathan as (MAN) Oh no.
-move Jonathan left 5
-darkness blackout
-
-focus Brandon
-approach Julian Brandon up 2
-darkness night
-say Julian A new one? Perhaps he can...
-say Jonathan as (MAN) Julian!
-remove Jonathan
-add Jonathan 4 10
-move Jonathan down 4
-face Julian Jonathan
-say Julian Not now, Jonathan!
 rotate Brandon 0
-face Brandon Julian
+wait 0.5
+face Brandon right
 wait 0.5
 face Brandon left
-wait 0.2
+wait 0.5
 face Brandon down
-wait 0.2
-face Brandon Julian
-say Brandon as "Arrival" Wh- What?
-say Julian I'm trying to get us off of this island!
-say Jonathan We all are, but the last arrival you took died! I won't let you do that again.
-face Julian Brandon
-wait 0.4
+wait 0.5
+face Brandon up
+confuse Brandon
+task Brandon Julian You've lost your memory. You don't know where you are. Find out.
+notify Tap and hold to access the movement stick. Drag finger to move around.
+
+*
+firstfight
+
+surprise Julian
+say Julian as (Stranger) A new arrival?
+add Jonathan 8 8
+
+// Jonathan arrives on scene
+move Jonathan left 2
 face Julian Jonathan
+surprise Julian
+say Julian as (Stranger) Jonathan!
+
+say Jonathan Julian, get away from him.
+
+face Julian Brandon
+say Julian Listen, you need to come with me. We can get out of here! We can-
+move Jonathan left 1
+face Julian Jonathan
+face Jonathan down
+say Jonathan Don't trust him, arrival.
+face Julian right
 wait 0.2
 face Julian Brandon
-say Julian Oh, to hell with it.
-move Julian down 1
-fight in beach Julian
-move Julian up 2
-face Julian Brandon
-wait 0.3
-face Julian Jonathan
-say Julian ... ... ...
-wait 0.4
-remove Julian
-move Jonathan down 2
+say Julian Fine! I'll fight you both if I have to!
+surprise Jonathan
+move Jonathan left 1
 face Jonathan Brandon
-say Jonathan That was Julian.
-say Jonathan nsnsfionsiofnesiofnes tattoooooo
-wait 0
+say Jonathan Arrival, I'll fight with you. Defend yourself!
+join Jonathan Brandon
+
+fight in beach Julian
+
+add Jonathan 4 8
+face Julian Jonathan
+surprise Julian
+move Julian left 1
+remove Julian
+
+face Jonathan left
+confuse Jonathan
+say Jonathan He... teleported?
+face Jonathan Brandon
+say Jonathan A question for later. Come here.
+assign Jonathan jonathan_intro
+task Brandon Jonathan Speak to Jonathan.
+
+*
+jonathan_intro
+say Jonathan My name's Jonathan. I'm a friend.
+move Jonathan left 1
+say Jonathan Welcome, I guess. This is the island.
+wait 0.2
+move Jonathan right 1
+face Jonathan Brandon
+say Jonathan There's someone else I'd like you to meet. She's better at explaining things than me.
+say Jonathan She'll be just east-northeast. I'll come with you. It's not safe to be alone before you get your bearings.
+join Jonathan Brandon
+remove Jonathan
+add Ley 15 15
+assign Ley ley_intro
+task Brandon Ley Find Jonathan's friend, to the east-northeast of where you woke up.
+
+*
+ley_intro
+
+darkness blackout
+
+approach Jonathan Ley right 1
+approach Brandon Ley down 2
+face Jonathan Brandon
+wait 1
+
+darkness night
+wait 0.3
+
+face Jonathan Ley
+say Jonathan This is Ley.
+
+say Ley New arrival, hm?
+confuse Ley
+move Ley down 1
+say Ley What's this mark on your forehead?
+ponder Ley
+say Ley The roman numeral two? What's that about?
+ponder Brandon
+face Jonathan Brandon
+say Jonathan You don't remember? Amnesia isn't unheard of among new arrivals. You'll want to find Gwen. Her gift might be able to help you.
+say Ley Each of us here has some kind of supernatural ability, which we call a "gift."
+say Ley Gwen's might be able to help you restore your memory.
+
+add Gwen 13 29
+face Gwen up
+assign Gwen gwen_intro
+
+task Brandon Gwen Find Gwen
+
+*
+gwen_intro
+ponder Gwen
+say Gwen That mark...
+say Gwen So you're the new arrival. What do you need from me?
+ponder Brandon
+move Gwen up 1
+say Gwen Your memory, hm? Alright. I can do that for you. I'll enchant something, but it'll take some time.
+face Gwen Brandon
+say Gwen Julian stole something of mine. Please get it back while I work on this.
+

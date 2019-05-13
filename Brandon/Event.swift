@@ -18,7 +18,7 @@ class Event{
     private var parts: [EventPart] = [EventPart]()
     var expires: Bool = true //Is this event only playable a single time
     public static var currentlyHappening = false //is a happening currently being run
-    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam"]
+    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam", "notify", "join", "surprise", "confuse", "ponder", "task"]
     
     init(_ eventText: String){
         
@@ -26,7 +26,11 @@ class Event{
             
             let part = String(part)
             
-            if(part.starts(with: "repeatable")){ //r for repeatable
+            if(part.starts(with: "//")){
+                //it's a comment. Ignore.
+            }
+                
+            else if(part.starts(with: "repeatable")){ //r for repeatable
                 expires = false;
             }
                 
@@ -63,6 +67,10 @@ class Event{
             }
         }
         
+    }
+    
+    static func stopHappening(){
+        currentlyHappening = false
     }
     
     func numParts() -> Int{
@@ -119,7 +127,7 @@ class Event{
                 parts.append(String(substring))
             }
             
-            if(parts[0] == happeningKeys[0]){ //add
+            if(parts[0] == "add"){ //add
                 
                 Data.entityExists(parts[1]) //if the thing that the instruction says to create exists
                 
@@ -136,13 +144,9 @@ class Event{
             
             else if(parts[0] == "remove"){ //remove
     
-                Data.entityExists(parts[1])
-                if(scene.children.contains(Data.entities[parts[1]]!)){
-                    scene.removeChildren(in: [Data.entities[parts[1]]!])
-                }
-                EventHandler.proceed()
+                remove(parts[1], from: Data.GameViewController!.scene!)
+                
             }
-            
             else if(parts[0] == "move"){ //move
  
                 currentlyHappening = true
@@ -187,17 +191,20 @@ class Event{
                         switch parts[2] {
                         case "up" :
                             entity.face(.up)
-                            //entity.move(by: <#T##CGVector#>, duration: <#T##TimeInterval#>)
-                            entity.run(SKAction.moveBy(x: 0, y: change, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false  })
+                            entity.eventMove(by: CGVector(dx: 0, dy: change), duration: time)
+                            //entity.run(SKAction.moveBy(x: 0, y: change, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false  })
                         case "down" :
                             entity.face(.down)
-                            entity.run(SKAction.moveBy(x: 0, y: -change, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false  })
+                            entity.eventMove(by: CGVector(dx: 0, dy: -change), duration: time)
+                            //entity.run(SKAction.moveBy(x: 0, y: -change, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false  })
                         case "left":
                             entity.face(.left)
-                            entity.run(SKAction.moveBy(x: -change, y: 0, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false  })
+                            entity.eventMove(by: CGVector(dx: -change, dy: 0), duration: time)
+                            //entity.run(SKAction.moveBy(x: -change, y: 0, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false  })
                         case "right":
                             entity.face(.right)
-                            entity.run(SKAction.moveBy(x: +change, y: 0, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false })
+                            entity.eventMove(by: CGVector(dx: +change, dy: 0), duration: time)
+                            //entity.run(SKAction.moveBy(x: +change, y: 0, duration: time), completion: { EventHandler.proceed(); currentlyHappening = false })
                         default :
                             fatalError("Direction was invalid")
                             
@@ -217,6 +224,7 @@ class Event{
             }
             
             else if(parts[0] == "end"){ //end
+                
                 (scene as! GameScene).viewContoller?.toMenu()
                 //scene.view?.presentScene(SKScene(fileNamed: "MainMenu"))
             }
@@ -350,7 +358,7 @@ class Event{
                     else if(parts[1] == "blackout"){
                         Data.GameViewController!.scene!.adjustDarkness(1)
                         DialogueBox.hide()
-                        EventHandler.showTouchPrompt()
+                        //EventHandler.showTouchPrompt()
                     }
                     else{
                         Data.GameViewController?.scene!.adjustDarkness(CGFloat(Int(parts[1])!))
@@ -381,6 +389,51 @@ class Event{
                 cam.removeFromParent()
                 scene.camera = cam
             }
+            else if(parts[0] == "notify"){
+                EventHandler.notify( String( instruction.split(separator: " ", maxSplits: 1, omittingEmptySubsequences: true)[1]), in: Data.GameViewController!.scene! )
+            }
+            else if(parts[0] == "join"){
+                Data.entityExists(parts[1])
+                
+                Data.entityExists(parts[2])
+                
+                (Data.entities[ parts[2] ] as! Player).addToParty( Data.entities[ parts[1] ] as! Interactable )
+                
+                remove(parts[1], from: Data.GameViewController!.scene!)
+                
+                EventHandler.notify("\(parts[1]) joins the party.", in: Data.GameViewController!.scene!)
+                
+            }
+            else if parts[0] == "surprise" {
+                Data.entityExists(parts[1])
+                
+                EventHandler.suprise(Data.entities[ parts[1] ] as! Interactable)
+            }
+            else if parts[0] == "confuse" {
+                Data.entityExists(parts[1])
+                
+                EventHandler.confuse(Data.entities[ parts[1] ] as! Interactable)
+            }
+            else if parts[0] == "ponder" {
+                Data.entityExists(parts[1])
+                
+                EventHandler.ponder(Data.entities[ parts[1] ] as! Interactable)
+            }
+            else if parts[0] == "task" {
+                
+                Data.entityExists( parts[1] )
+                
+                Data.entityExists( parts[2] )
+                
+                let player = Data.entities[ parts[1] ] as! Player
+                
+                let text = String( instruction.split(separator: " ", maxSplits: 3) [3] )
+                
+                player.assignTask( Task.init(text: text, target: Data.entities[parts[2]] as! Interactable) )
+                
+                EventHandler.proceed()
+                
+            }
             
             if(!isLine){ //must be at end
                 EventHandler.proceedIfLast()
@@ -388,7 +441,17 @@ class Event{
             
         }
         
+        private func remove(_ name: String, from scene: SKScene){
+            Data.entityExists(name)
+            if(scene.children.contains(Data.entities[name]!)){
+                scene.removeChildren(in: [Data.entities[name]!])
+            }
+            EventHandler.proceed()
+        }
+        
     }
+    
+    
     
     class Line: EventPart {
         

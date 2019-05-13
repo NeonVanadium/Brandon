@@ -14,9 +14,9 @@ class DialogueBox {
     private static var box : SKLabelNode = SKLabelNode.init()
     //private static var speechBox : SKLabelNode = SKLabelNode.init()
     private static var nameLabel : SKLabelNode = SKLabelNode.init()
-    //private static var box : SKNode = SKNode.init() //the old sprite background
     private static var defaultPosition = CGPoint.zero
     private static var isSetup = false
+    static var typingText: String? //the text actively being typed
     
     public static func setup(){
         
@@ -33,7 +33,7 @@ class DialogueBox {
         
         //create components
         
-        box.zPosition = 5;
+        box.zPosition = 100;
         box.lineBreakMode = .byWordWrapping
         box.numberOfLines = 4
         box.horizontalAlignmentMode = .left
@@ -56,7 +56,7 @@ class DialogueBox {
         speechBox.fontName = "Arial Bold"
         */
     
-        nameLabel.zPosition = 2;
+        nameLabel.zPosition = 100;
         nameLabel.horizontalAlignmentMode = .left
         nameLabel.verticalAlignmentMode = .top
         nameLabel.position.y = 30
@@ -73,7 +73,6 @@ class DialogueBox {
     }
     
     static func unhookAndReset(){
-        //nameLabel.removeFromParent()
         box.removeFromParent()
     }
     
@@ -89,13 +88,38 @@ class DialogueBox {
         return box
     }
     
+    private static func typeOutLine(_ t: String){
+        
+        typingText = t
+        
+        typeOutLineInner()
+        
+    }
+    
+    private static func typeOutLineInner(){
+        
+        box.text = String(typingText!.prefix(box.text!.count + 1))
+        
+        box.run(.wait(forDuration: 0.01), completion: {
+            if typingText!.count > (box.text?.count)! {
+                typeOutLineInner()
+            }
+            else{
+                typingText = nil
+            }
+        })
+    }
+    
     static func feed(line l: Event.Line){
         
         if(box.isHidden){
             show()
         }
         
-        box.text = l.text
+        //box.text = l.text
+        box.text = ""
+        
+        typeOutLine(l.text)
         
         if(l.speaker != nil){
             setSpeakerName(l.speaker!.name!)
@@ -150,6 +174,11 @@ class DialogueBox {
     static func show(){
         //speechBox.isHidden = false
         box.isHidden = false
+    }
+    
+    static func clear(){
+        box.text = ""
+        setSpeakerName("")
     }
     
 }
