@@ -32,9 +32,6 @@ class PauseButton: SKShapeNode {
         self.position.y = Util.getScreenPosition(.top)
         self.name = "pauseButton"
         
-        print(self.position.x)
-        print(self.position.y)
-        
         createButton(withLabel: "Exit game")
         createButton(withLabel: "Current task")
         

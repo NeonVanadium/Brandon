@@ -8,10 +8,11 @@
 
 import Foundation
 import SpriteKit
+import AVFoundation
 
 class Combat: SKScene{
     
-    var viewController: CombatViewController?
+    var viewController: CombatViewController!
     var allies: [Interactable] = [Interactable].init()
     var enemies: [Interactable] = [Interactable].init()
     var allyLabel = SKLabelNode.init(text: "allies")
@@ -19,31 +20,56 @@ class Combat: SKScene{
     var timer: Double = 0.0
     private var player: Interactable!
     
-    static let basicAttack = ability.init(name: "attack", target: .enemy, magnitude: 1, chargeTime: 1.5, cost: 3)
-    static let attack = ability.init(name: "attack", target: .enemy, magnitude: 1, chargeTime: 0.75, cost: 3)
+    static var combatHit: AVAudioPlayer!
     
-    static let heal = ability.init(name: "meditate", target: .personal, magnitude: -2, chargeTime: 1, cost: 3)
     private var isOver = false
     
-    private let label = SKLabelNode.init() //temporary to keep camera from deallocating and stand in for the UI
+    private let label = SKLabelNode.init() //Basic UI
     
     
-    func setup(arena name: String, against opponents: [Interactable]){
+    func setup(against opponents: [Interactable]){
         //Data.loadMap(name, toScene: Data.CombatViewController!.scene!)
         
-        //camera = SKCameraNode.init()
-        //camera?.addChild(label)
+        //Set up the audio
         
-        //PauseButton.create(inScene: self)
+        let hit: URL! = Bundle.main.url(forResource: "hitsfx", withExtension: "mp3")
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+            Combat.combatHit = try AVAudioPlayer(contentsOf: hit, fileTypeHint: AVFileType.mp3.rawValue)
+        }
+        catch {
+            print("audio for Combat failed to load")
+        }
         
         //all participating Interactables must be copied. The instance already assigned to the gamescene cannot be added here without removing it from gamescene. It'll be easier to copy than to have to deal with and store manipulating two scenes to get this set-up.
         
         //Set up brandon (the player)
         player = Interactable.init(multiframeCopyFrom: Data.entities["Brandon"]!)
         
+        
+        //set up the player's buttons
+        
+        var buttonCount = 0
+        
+        for ability in player.battleBrain!.abilities {
+            
+            let button = ability.getButton()
+            
+            button.position.x = Util.getScreenPosition(.left) + CGFloat(Ability.buttonWidth * buttonCount )
+            
+            addChild(button)
+                
+            buttonCount += 1
+            
+        }
+        
         //set up ally team
         allies.append(player)
         
+        Util.setupLabel(allyLabel)
         allyLabel.position.x = Util.getScreenPosition(.left)
         allyLabel.position.y = Util.getScreenPosition(.top)
         addChild(allyLabel)
@@ -62,6 +88,7 @@ class Combat: SKScene{
         
         //Set up enemy team
         
+        Util.setupLabel(enemyLabel)
         enemyLabel.position.x = Util.getScreenPosition(.right)
         enemyLabel.position.y = Util.getScreenPosition(.top)
         addChild(enemyLabel)
@@ -78,6 +105,13 @@ class Combat: SKScene{
             character.position = getFighterPosition(character)
         }
         
+        
+        //adds the UI label
+        Util.setupLabel(label)
+        label.position.x = Util.getScreenPosition(.center)
+        label.position.y = Util.getScreenPosition(.bottom)
+        addChild(label)
+        
         self.incrementTime() //begins the timer
         
     }
@@ -86,14 +120,14 @@ class Combat: SKScene{
         
         self.run(.wait(forDuration: 1), completion: //every (duration), do the following:
             {
-                if(!self.isOver){
+                if !self.isOver {
                 
-                self.globalEnergyUpkeep()
+                    self.globalEnergyUpkeep()
                     
-                self.allEnemiesThink()
-                self.allAlliesThink()
-                
-                self.incrementTime()
+                    self.allEnemiesThink()
+                    self.allAlliesThink()
+                    
+                    self.incrementTime()
                 
                 }
                 
@@ -103,7 +137,7 @@ class Combat: SKScene{
     
     private func allAlliesThink(){
         for unit in self.allies{
-            if unit != player{ //since the player is manual, not controlled by a combat intellgience
+            if unit != player{ //since the player is manual, it is not controlled by a combat intellgience
                 unit.battleBrain!.think(inCombat: self)
             }
         }
@@ -146,7 +180,13 @@ class Combat: SKScene{
         
     }
     
+    func updateStatusLabel(){
+        label.text = "HEALTH: \(player.health)\nENERGY: \(player.energy)"
+    }
+    
     private func setupFighter(_ fighter: Interactable){
+        
+        fighter.health = Interactable.maxHealth
         
         let tlabel = SKLabelNode.init()
         
@@ -166,13 +206,14 @@ class Combat: SKScene{
         updateStatusLabel(allyLabel, forTeam: allies)
         updateStatusLabel(enemyLabel, forTeam: enemies)
         
-        if(!isOver && i.health <= 0) {
+        if(!isOver && i.health <= 0 && (allies.contains(i) || enemies.contains(i)) ) {
+            
             
             if(i.isAlly){
-                allies.remove(at: i.index!)
+                allies.remove(at: allies.index(of: i)!)
             }
             else{
-                enemies.remove(at: i.index!)
+                enemies.remove(at: enemies.index(of: i)!)
             }
             
             scene?.removeChildren(in: [i])
@@ -184,13 +225,37 @@ class Combat: SKScene{
     
     private func checkIfCombatOver(){
         if(allies.count == 0){ //if lost
-            isOver = true
-            viewController!.toMenu()
+            end()
+            loseProcess()
         }
         if(enemies.count == 0){ //if won
-            isOver = true
-            viewController!.win()
+            end()
+            winProcess()
         }
+    }
+    
+    private func end() { //cleans up
+        
+        isOver = true
+        
+        removeAllChildren()
+        
+        for i in allies + enemies {
+            i.removeAllActions()
+            i.removeFromParent()
+        }
+        
+        allies.removeAll()
+        enemies.removeAll()
+        
+    }
+    
+    private func winProcess() {
+        //EventHandler.notify("Victory", in: self)
+        viewController.win()
+    }
+    private func loseProcess() {
+        viewController.toMenu()
     }
     
     private func globalEnergyUpkeep(){
@@ -201,6 +266,7 @@ class Combat: SKScene{
         for unit in enemies{
             unit.modifyEnergy(1)
         }
+        updateStatusLabel()
         
     }
     
@@ -213,7 +279,7 @@ class Combat: SKScene{
             
             x = Util.byTiles(-2)
             
-            let startPoint = Util.byTiles(allies.count - 1)
+            let startPoint = Util.byTiles(allies.count)
             
             y = startPoint - (Util.byTiles(i.index!) * 2)
             
@@ -221,7 +287,7 @@ class Combat: SKScene{
         else {
             x = Util.byTiles(2)
             
-            let startPoint = Util.byTiles(enemies.count - 1)
+            let startPoint = Util.byTiles(enemies.count)
             
             y = startPoint - (Util.byTiles(i.index!) * 2)
             
@@ -243,35 +309,19 @@ class Combat: SKScene{
     func touchDown(_ t:UITouch){
         
         let point = t.location(in: self)
-      
-        //(childNode(withName: "pauseButton") as! PauseButton).process(point: point)
         
-        if self.childNode(withName: "attack")!.contains(point) {
-            player.use(Combat.attack, on: enemies.first!)
+        guard let ability = player.battleBrain!.checkAbilityButtonContains(point: point) else { return }
+        
+        if ability.targetType == .enemy {
+            player.use(ability, on: enemies.first!)
+        }
+        else{
+            player.use(ability, on: nil)
         }
         
-        if self.childNode(withName: "heal")!.contains(point) {
-            player.use(Combat.heal, on: nil)
-        }
-        
-        for unit in allies{
-            if unit.contains(point) {
-                
-                enemies.first!.use(Combat.basicAttack, on: unit)
-                
-            }
-        }
-        
-        for unit in enemies{
-            if unit.contains(point) {
-                
-                allies.first?.use(Combat.basicAttack, on: unit)
-                
-            }
-        }
     }
     
-    class ability {
+    class Ability {
         
         var name: String
         var targetType: targetType
@@ -280,12 +330,60 @@ class Combat: SKScene{
         var cost: Int
         private var isSpecial: Bool = false
         
+        //stuff for the button
+        private var button: SKShapeNode!
+        
+        static let buttonWidth = 150
+        static let buttonHeight = 80
+        
         init(name n: String, target t: targetType, magnitude m: Int, chargeTime ct: TimeInterval, cost c: Int){
             name = n
             self.targetType = t
             magnitude = m
             charge = ct
             cost = c
+        }
+        
+        private func setupButton(){
+            
+            button = Util.createOutline(w: Combat.Ability.buttonWidth, h: Combat.Ability.buttonHeight, color: .gray)
+            button.name = "\(name) button"
+            button.position.y = Util.getScreenPosition(.bottom) - CGFloat(Util.byTiles(1))
+            button.zPosition = 10
+            
+            let label = SKLabelNode.init()
+            label.text = name
+            
+            Util.setupLabel(label)
+            button.addChild(label)
+            
+        }
+        
+        func getButton() -> SKShapeNode {
+            if button == nil { setupButton() }
+            return button
+        }
+        
+        func buttonContains(point: CGPoint) -> Bool {
+            if button == nil || !button.contains(point) {
+                return false
+            }
+            return true
+        }
+        
+        static func stringToTargetType(_ s: String) -> targetType{
+            if s == "personal" {
+                return .personal
+            }
+            else if s == "enemy" {
+                return .enemy
+            }
+            else if s == "ally" {
+                return .ally
+            }
+            else {
+                return .any
+            }
         }
         
         enum targetType{

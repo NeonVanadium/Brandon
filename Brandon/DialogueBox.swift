@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import AVFoundation
 
 class DialogueBox {
     
@@ -17,6 +18,7 @@ class DialogueBox {
     private static var defaultPosition = CGPoint.zero
     private static var isSetup = false
     static var typingText: String? //the text actively being typed
+    static var player: AVAudioPlayer!
     
     public static func setup(){
         
@@ -62,6 +64,20 @@ class DialogueBox {
         nameLabel.position.y = 30
         nameLabel.fontName = "Arial Bold"
         
+        //SET UP AUDIO
+        let click: URL! = Bundle.main.url(forResource: "dialoguetextclick", withExtension: "wav")
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+            player = try AVAudioPlayer(contentsOf: click, fileTypeHint: AVFileType.mp3.rawValue)
+            //player.play()
+        }
+        catch {
+            print("audio for Dialogue Box failed to load")
+        }
+        
         
         box.addChild(nameLabel)
         //box.addChild(touchPrompt)
@@ -98,9 +114,10 @@ class DialogueBox {
     
     private static func typeOutLineInner(){
         
+        player.play()
         box.text = String(typingText!.prefix(box.text!.count + 1))
-        
-        box.run(.wait(forDuration: 0.01), completion: {
+
+        box.run(.wait(forDuration: 0.02), completion: {
             if typingText!.count > (box.text?.count)! {
                 typeOutLineInner()
             }

@@ -12,6 +12,7 @@ import SpriteKit
 class GameObject: SKNode{
     
     private var atlas: SKTextureAtlas?
+    internal var atlasName: String = ""
     private var body: SKSpriteNode = SKSpriteNode.init()
     public var facing: Facing = Facing.down
     var walkDown: [SKTexture]!
@@ -19,11 +20,15 @@ class GameObject: SKNode{
     var walkLeft: [SKTexture]!
     var walkRight: [SKTexture]!
     private var curAnim: [SKTexture]!
-    private var atlasName: String = "Brandon"
     private var moving: Bool = false
+    private let frameTime = 0.15 //the wait between frames while running
+    private var shadow: SKShapeNode!
     
     public static var RUNSPEED: Int = 8;
     public static var WALKSPEED: Int = 3;
+    
+    var clones = 0 //the number of clones of this Entity
+    var isClone = false
     
     init(multiframeFrom line: String){ //for objects with multiple frames
         
@@ -41,6 +46,11 @@ class GameObject: SKNode{
     }
     
     init(multiframeCopyFrom other: GameObject){
+        
+        if(other.clones > 9) {
+            fatalError("Cannot have more than 9 clones of \(other.name!)")
+        }
+        
         atlas = other.atlas
         atlasName = other.atlasName
         
@@ -64,7 +74,7 @@ class GameObject: SKNode{
         b.physicsBody?.allowsRotation = false
         b.physicsBody?.isDynamic = false
         
-        let shadow = SKShapeNode.init(ellipseOf: CGSize(width: b.size.width, height: 30))
+        shadow = SKShapeNode.init(ellipseOf: CGSize(width: b.size.width, height: 30))
         shadow.zPosition = -1
         shadow.fillColor = .black
         shadow.alpha = 0.2
@@ -78,19 +88,19 @@ class GameObject: SKNode{
         walkLeft = [SKTexture].init()
         walkRight = [SKTexture].init()
         
-        for num in 0...2 {
+        for num in 0...3 {
             walkDown!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
-        for num in 3...5 {
+        for num in 4...7 {
             walkUp!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
-        for num in 6...8 {
+        for num in 8...11 {
             walkLeft!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
-        for num in 9...11 {
+        for num in 12...15 {
             walkRight!.append( setupTexture(atlas!.textureNamed("\(atlasName)\(num)")) )
         }
         
@@ -154,15 +164,57 @@ class GameObject: SKNode{
         self.physicsBody?.isDynamic = true
     }
     
-    func eventMove(by vector: CGVector, duration d: TimeInterval){
+    private func getDistanceFromVector(_ v: CGVector) -> CGFloat {
+        var distance: CGFloat = 0
+        if(v.dx != 0){
+            distance = v.dx
+        }
+        else {
+            distance = v.dy
+        }
         
-        self.run(SKAction.move(by: vector, duration: d), completion: {
+        return abs(distance)
+    }
+    
+    func eventMove(by vector: CGVector, proceed: Bool){ //removed a harcoded distance variable
+        
+        let distance = getDistanceFromVector(vector)
+        
+        self.run(SKAction.move(by: vector, duration: GameObject.getMotionTime(fromDistance: Int(distance))), completion: {
             
             self.standStill();
-            EventHandler.proceed()
-            Event.stopHappening()
+            if proceed {
+              EventHandler.proceed()
+            }
+            Event.stopHappening() //stops the current animation, not the event. Don't forget.
             
         } )
+        
+        startRunning()
+        
+    }
+    
+    func approachMove(x: CGFloat, y: CGFloat, approached: GameObject){ //removed a harcoded distance variable
+        
+        let Xvector = CGVector(dx: x, dy: 0)
+        let Yvector = CGVector(dx: 0, dy: y)
+        let Xduration = GameObject.getMotionTime(fromDistance: Int(x))
+        let Yduration = GameObject.getMotionTime(fromDistance: Int(y))
+        
+        self.run(SKAction.move(by: Xvector, duration: Xduration), completion: {
+            
+            self.run(SKAction.move(by: Yvector, duration: Yduration), completion: {
+                
+                self.standStill()
+                self.lookAt(approached)
+                EventHandler.proceed()
+                Event.stopHappening()
+                
+            })
+            
+            self.startRunning()
+            
+        })
         
         startRunning()
         
@@ -171,17 +223,36 @@ class GameObject: SKNode{
     func combatMove(to point: CGPoint, duration d: TimeInterval){
         self.run(.move(to: point, duration: d), completion: { self.standStill() })
         
+        updateZPosition()
+        
         startRunning()
     }
     
     func move(by vector: CGVector, duration d: TimeInterval){
         
-        self.run(SKAction.move(by: vector, duration: d), completion: {  } )
+        self.run(SKAction.move(by: vector, duration: d))
         
-        self.zPosition = 2 - (0.0001 * self.position.y)
+        updateZPosition()
         
         startRunning()
         
+    }
+    
+    func move(by vector: CGVector){
+        
+        let distance = getDistanceFromVector(vector)
+        
+        self.run(SKAction.move(by: vector, duration: GameObject.getMotionTime(fromDistance: Int(distance))))
+        
+        updateZPosition()
+        
+        startRunning()
+        
+    }
+    
+    func updateZPosition(){
+        self.zPosition = 2 - (0.0001 * self.position.y)
+        shadow.zPosition = -1 - (0.0001 * self.position.y)
     }
     
     func standStill(){
@@ -196,7 +267,7 @@ class GameObject: SKNode{
     func startRunning(){
         
         if(!moving){
-            let frameTime = 0.2
+            
             body.run(SKAction.repeatForever(.animate(with: curAnim, timePerFrame: frameTime)))
         }
         
@@ -235,6 +306,10 @@ class GameObject: SKNode{
         
     }
     
+    static func getMotionTime(fromDistance d: Int) -> TimeInterval{
+        return Double(abs(Double.init(d) / (Double.init(GameObject.RUNSPEED) * 50))) //the time it will take for the whoever to move
+    }
+    
     func rotateSprite(by degrees: Int){
         body.zRotation = CGFloat(degrees)
     }
@@ -251,6 +326,25 @@ class GameObject: SKNode{
         }
         if(direction == .right){
             face(.left)
+        }
+    }
+    
+    func lookAt(_ target: SKNode){
+        if(abs(position.x - target.position.x) > abs(position.y - target.position.y)){
+            if(target.position.x < position.x){
+                face(.left)
+            }
+            if(target.position.x > position.x){
+                face(.right)
+            }
+        }
+        else{
+            if(target.position.y < position.y){
+                face(.down)
+            }
+            if(target.position.y > position.y){
+                face(.up)
+            }
         }
     }
 

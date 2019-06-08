@@ -15,6 +15,7 @@ class Data{
     public static var events: Dictionary<String, Event> = Dictionary<String, Event>()
     public static var maps: Dictionary<String, Substring> = Dictionary<String, Substring>()
     public static var tiles: Dictionary<Int, SKTexture> = Dictionary<Int, SKTexture>()
+    public static var abilities: Dictionary<String, Combat.Ability> = Dictionary<String, Combat.Ability>()
     public static var tileSideLength = 100
     public static var darkness: CGFloat = 0.0 //0.4ish for night
     public static var MainMenuViewController: MainMenuViewController?
@@ -68,6 +69,23 @@ class Data{
             //drop first gets rid of the '/'
             events[String(split[0])] = Event.init(String(split[1]))
         }
+    }
+    
+    static func setupAbilities(){ //all moves usable in combat
+        let file = Util.loadFile(name: "abilities", extension: "txt")
+        
+        for line in file.split(separator: "\n"){
+            
+            let parameters = line.split(separator: " ")
+            
+            let ability = Combat.Ability.init(name: String(parameters[0]), target:  Combat.Ability.stringToTargetType(String(parameters[1])), magnitude: Int(String(parameters[2]))!, chargeTime: TimeInterval(String(parameters[3]))!, cost: Int(String(parameters[4]))!)
+            //parses the ability from the file
+            
+            abilities[String(parameters[0])] = ability
+            //puts it in the array
+            
+        }
+        
     }
     
     static func parseMaps(){

@@ -87,6 +87,13 @@ class Util{
         
     }
     
+    static func setupLabel(_ l: SKLabelNode){
+        l.zPosition = 100;
+        l.lineBreakMode = .byWordWrapping
+        l.verticalAlignmentMode = .center
+        l.fontName = "Arial Bold"
+    }
+    
 }
 
 enum screenPosition{

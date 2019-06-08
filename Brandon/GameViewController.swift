@@ -57,9 +57,9 @@ class GameViewController: UIViewController {
         self.dismiss(animated: true)
     }
     
-    func startCombat(arena name: String, against opponents: [Interactable]){
+    func startCombat(against opponents: [Interactable]){
         self.performSegue(withIdentifier: "startCombat", sender: self)
-        Data.CombatViewController?.scene!.setup(arena: name, against: opponents)
+        Data.CombatViewController?.scene!.setup(against: opponents)
     }
 
     override var shouldAutorotate: Bool {

@@ -49,7 +49,7 @@ class EventHandler {
         hostEvent(Data.events[n]!)
     }
     
-    private static func initPuntuationAnims(){
+    static func initPunctuationAnims(){
         
         let exatlas = SKTextureAtlas.init(named: "exclamation")
         
@@ -62,7 +62,7 @@ class EventHandler {
         
         exclamationFrames = [SKTexture].init()
         
-        for num in 0...3{
+        for num in 0...2{
             exclamationFrames.append(exatlas.textureNamed("exclamation\(num)"))
         }
         
@@ -92,7 +92,7 @@ class EventHandler {
         
         ellipseFrames = [SKTexture].init()
         
-        for num in 0...3{
+        for num in 0...4{
             ellipseFrames.append(elatlas.textureNamed("ellipse\(num)"))
         }
         
@@ -101,7 +101,7 @@ class EventHandler {
     static func suprise(_ i: Interactable){
         
         if(exclamation == nil){
-            initPuntuationAnims()
+            initPunctuationAnims()
         }
         
         i.addChild(exclamation)
@@ -109,7 +109,10 @@ class EventHandler {
         exclamation.run(.animate(with: exclamationFrames, timePerFrame: 0.15), completion: {
             
             exclamation.run(.wait(forDuration: postEmoteWait), completion: {
-                     exclamation.removeFromParent(); EventHandler.proceed()
+                    if(exclamation.parent != nil){
+                        //exclamation.removeFromParent();
+                        EventHandler.proceed()
+                    }
                 })
     
         })
@@ -118,15 +121,17 @@ class EventHandler {
     static func confuse(_ i: Interactable){
         
         if(question == nil){
-            initPuntuationAnims()
+            initPunctuationAnims()
         }
         
         i.addChild(question)
         
         question.run(.animate(with: questionFrames, timePerFrame: 0.05), completion: {
-            
             question.run(.wait(forDuration: postEmoteWait), completion: {
-                question.removeFromParent(); EventHandler.proceed()
+                if(question.parent != nil){
+                    //question.removeFromParent();
+                    EventHandler.proceed()
+                }
             })
             
         })
@@ -135,14 +140,17 @@ class EventHandler {
     static func ponder(_ i: Interactable){
         
         if(ellipse == nil){
-            initPuntuationAnims()
+            initPunctuationAnims()
         }
         
         i.addChild(ellipse)
         
         ellipse.run(.animate(with: ellipseFrames, timePerFrame: 0.15), completion: {
             ellipse.run(.wait(forDuration: postEmoteWait), completion: {
-                ellipse.removeFromParent(); EventHandler.proceed()
+                if(ellipse.parent != nil){
+                    //ellipse.removeFromParent();
+                    EventHandler.proceed()
+                }
             })
             
         })
@@ -205,6 +213,13 @@ class EventHandler {
     }
     
     static func proceed(){ //move to the next step in the event, ending if there are none.
+        
+        ellipse.removeAllActions()
+        ellipse.removeFromParent()
+        exclamation.removeAllActions()
+        exclamation.removeFromParent()
+        question.removeAllActions()
+        question.removeFromParent()
         
         if(DialogueBox.typingText != nil){ //cancels the typing of text, shows the whole thing immediately
             DialogueBox.setText(DialogueBox.typingText!)
@@ -297,10 +312,17 @@ class EventHandler {
         
             notifyLabel.text = txt
             
-            curScene!.camera!.addChild(notifyLabel)
+            if(curScene!.camera != nil) {
+                curScene!.camera!.addChild(notifyLabel)
+            }
+            else{
+                curScene!.addChild(notifyLabel)
+            }
+            
+            
             
             notifyLabel.run(.fadeIn(withDuration: 0.5), completion: {
-                notifyLabel.run(.wait(forDuration: 4), completion: {
+                notifyLabel.run(.wait(forDuration: 3), completion: {
                     notifyLabel.run(.fadeOut(withDuration: 1), completion: {
                         notifyLabel.removeFromParent()
                         if !notifyQueue.isEmpty { //if there are notifications that occured simultaneously waiting to be shown

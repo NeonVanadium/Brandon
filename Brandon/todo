@@ -2,7 +2,12 @@ water tile
 when combat moves would overlap, create a queue or some shit and run through them chronologically so people don't yeet into each other center screen
 the lane thing
 black cutscene bounds thing
-fix animation skippy boi (brute fix: repeat the middle frame, have 16 total frames instead of 12)
-combat UI: unsuck
-task direction arrow
-make sure tap prompt remains visible after text printing is skipped
+do the like sound position tracker thing so we can effectively manage restarting the audio ya know
+
+if a character has no defensives, don't let it keep trying to defend.
+
+entities do not change to face the way they are walking in approachMove
+
+saving
+
+check the player's energy gain

@@ -7,7 +7,7 @@ face Julian up
 assign Julian firstfight
 ;APRIL 29. 1:30AM. Somewhere in the Atlantic.
 
-darkness night
+darkness day
 rotate Brandon 0
 wait 0.5
 face Brandon right
@@ -18,6 +18,7 @@ face Brandon down
 wait 0.5
 face Brandon up
 confuse Brandon
+
 task Brandon Julian You've lost your memory. You don't know where you are. Find out.
 notify Tap and hold to access the movement stick. Drag finger to move around.
 
@@ -38,7 +39,7 @@ say Jonathan Julian, get away from him.
 
 face Julian Brandon
 say Julian Listen, you need to come with me. We can get out of here! We can-
-move Jonathan left 1
+//move Jonathan left 1
 face Julian Jonathan
 face Jonathan down
 say Jonathan Don't trust him, arrival.
@@ -47,18 +48,20 @@ wait 0.2
 face Julian Brandon
 say Julian Fine! I'll fight you both if I have to!
 surprise Jonathan
-move Jonathan left 1
-face Jonathan Brandon
+approach Jonathan Julian up 1
 say Jonathan Arrival, I'll fight with you. Defend yourself!
 join Jonathan Brandon
 
-fight in beach Julian
+fight Julian
 
 add Jonathan 4 8
 face Julian Jonathan
 surprise Julian
 move Julian left 1
+
+fade in white
 remove Julian
+fade out
 
 face Jonathan left
 confuse Jonathan
@@ -79,7 +82,6 @@ face Jonathan Brandon
 say Jonathan There's someone else I'd like you to meet. She's better at explaining things than me.
 say Jonathan She'll be just east-northeast. I'll come with you. It's not safe to be alone before you get your bearings.
 join Jonathan Brandon
-remove Jonathan
 add Ley 15 15
 assign Ley ley_intro
 task Brandon Ley Find Jonathan's friend, to the east-northeast of where you woke up.
@@ -87,15 +89,15 @@ task Brandon Ley Find Jonathan's friend, to the east-northeast of where you woke
 *
 ley_intro
 
-darkness blackout
+fade in black
 
 approach Jonathan Ley right 1
 approach Brandon Ley down 2
 face Jonathan Brandon
-wait 1
 
-darkness night
-wait 0.3
+darkness day
+
+fade out
 
 face Jonathan Ley
 say Jonathan This is Ley.
@@ -107,25 +109,240 @@ say Ley What's this mark on your forehead?
 ponder Ley
 say Ley The roman numeral two? What's that about?
 ponder Brandon
+approach Jonathan Brandon right 1
 face Jonathan Brandon
-say Jonathan You don't remember? Amnesia isn't unheard of among new arrivals. You'll want to find Gwen. Her gift might be able to help you.
-say Ley Each of us here has some kind of supernatural ability, which we call a "gift."
-say Ley Gwen's might be able to help you restore your memory.
+face Jonathan Brandon
+say Jonathan You don't remember? Amnesia isn't unheard of among new arrivals. You'll want to find Gwen. Her gift could help you.
+say Ley Ah, right. On the island, there are some... forces beyond our understanding.
+say Ley Some that arrive have special abilities, called gifts. Gwen is one of those people. We call her an enchantress.
+say Ley She might be able to help you restore your memory. She usually hangs out alone, on the northern shore.
+say Jonathan She's rather solitary, and doesn't like being approached in groups. So, I'll stay behind, but we'll keep watch over you.
 
-add Gwen 13 29
+add Gwen 12 29
 face Gwen up
 assign Gwen gwen_intro
 
-task Brandon Gwen Find Gwen
+task Brandon Gwen Find Gwen on the northern shore.
+leave Jonathan Brandon
 
 *
 gwen_intro
+remove Jonathan
+remove Ley
 ponder Gwen
 say Gwen That mark...
 say Gwen So you're the new arrival. What do you need from me?
 ponder Brandon
-move Gwen up 1
-say Gwen Your memory, hm? Alright. I can do that for you. I'll enchant something, but it'll take some time.
+face Gwen up
+say Gwen Your memory, hm?
+say Gwen Alright. I can do that for you. I'll enchant something, but it'll take some time.
 face Gwen Brandon
 say Gwen Julian stole something of mine. Please get it back while I work on this.
+say Gwen I can detect where the object is. I have that ability. Right now, he's on the south of the island, not far from where you washed ashore.
 
+task Brandon Julian Find Julian on the south part of the island.
+add Julian 20 3
+face Julian down
+assign Julian julian1
+
+*
+julian1
+surprise Julian
+say Julian Oh, it's... you.
+move Julian right 2
+face Julian left
+face Brandon Julian
+say Julian Listen, I don't know what you want from me. Just leave me be.
+ponder Brandon
+say Julian Ah, you want this.
+approach Julian Brandon right 1
+say Julian Just take it.
+assign Julian julian_after_got_artifact
+
+notify Acquired Gwen's artifact.
+approach Mask Gwen right 2
+assign Mask dotdotdot
+face Gwen right
+task Brandon Gwen Return the artifact to Gwen, on the northern shore.
+assign Gwen gwen2
+
+*gwen2
+
+//cleanup
+remove Julian
+
+//Gwen and Mask chat ominously
+say Gwen This is him.
+approach Mask Brandon right 1
+ponder Mask
+say Mask I see.
+face Brandon Gwen
+face Mask Brandon
+face Gwen Brandon
+say Gwen This man is called mask. I am sure you two will become very well acquainted.
+say Gwen But that is not why you are here. Hold still.
+
+face Gwen left
+;(Gwen slides a ring onto her finger.)
+face Gwen down
+;(She places her hand on your head.)
+fade in purple
+;NAME: Brandon.   ORIGIN: Atlantic ocean.   AGE: < 1 day.
+fade out
+
+//Gwen and Mask react to Brandon's identity.
+ponder Mask
+say Mask So it is.
+move Mask down 4
+face Brandon Mask
+confuse Brandon
+move Mask right 3
+move Mask down 6
+remove Mask
+face Brandon Gwen
+ponder Gwen
+face Brandon left
+move Gwen left 6
+remove Gwen
+confuse Brandon
+
+//Ley arrives
+approach Ley Brandon down 6
+approach Ley Brandon down 1
+face Brandon Ley
+say Ley Not to alarm you, but if Mask is taking an interest in your identity, you'd best be worried.
+say Ley But anyway, did you learn anything about yourself?
+ponder Brandon
+say Ley Your name is Brandon, but you were born in the ocean, and you're less than a day old?
+ponder Ley
+say Ley Well, if that last thing is true, I certainly feel bad for your mother. You look to be in your twenties.
+say Ley But anyway, you've met all of us on the island right now. Jon's waiting back where you met me in the first place.
+
+task Brandon Jonathan Return to Jonathan, where you first met Ley.
+add Jonathan 15 15
+join Ley Brandon
+assign Jonathan jonley1
+
+*
+jonley1
+approach Brandon Jonathan up 1
+approach Ley Jonathan right 1
+approach Brandon Ley up 1
+face Brandon Jonathan
+face Jonathan Ley
+say Jonathan So, how'd it go?
+ponder Brandon
+say Ley For some reason, Mask seems to be personally interested in him.
+ponder Jonathan
+say Jonathan Well, now that we know your name, Brandon, nice to meet you.
+fade in white
+fade out
+face Brandon right
+face Ley right
+surprise Brandon
+ponder Jonathan
+say Jonathan Today's food. Whose turn was it?
+say Ley Julian's, right?
+say Jonathan Yep, there he is.
+confuse Brandon
+face Ley Brandon
+say Ley You've no doubt noticed the island is almost entirely flat and barren, save some grass.
+say Ley I mentioned earlier some "forces beyond our understanding." Well, those forces are the only reason we have any food or drinkable water.
+say Jonathan We take turns eating. The longer the island goes without a death, the less food appears.
+say Ley Since Brandon just showed up, there might be leftovers?
+say Jonathan Good point. Let's head over there. Get Brandon something to eat. I remember I was starving when I arrived.
+
+add Julian 40 14
+assign Julian julian2
+face Julian up
+task Brandon Julian Food. Julian's got some, to the east of your meeting point with Jon and Ley.
+join Jonathan Brandon
+remove Ley
+
+*
+julian2
+approach Brandon Julian left 1
+approach Jonathan Brandon up 1
+approach Ley Brandon down 1
+face Jonathan Julian
+face Ley Julian
+
+surprise Julian
+say Julian I'm not doing anything! I'm just eating! It's my turn!
+say Jonathan We're not here to hurt you, Julian. We were just wondering if there were any leftovers.
+say Ley For the new arrival.
+ponder Julian
+say Julian ...alright. Here, take some.
+;(Julian hands over some vegetables. They taste plain, but fresh.)
+
+//Mask arrives
+approach Mask Julian up 10
+approach Gwen Mask left 1
+approach Mask Julian up 3
+approach Gwen Mask left 1
+face Gwen Julian
+surprise Julian
+say Julian Oh, god, now what? I'm not doing anything!
+say Mask ... ... ...
+say Mask Brandon. Fight me.
+surprise Brandon
+surprise Jonathan
+surprise Ley
+move Julian down 2
+face Julian Mask
+
+face Jonathan Brandon
+say Jonathan Alright. We're with you.
+face Mask Jonathan
+say Mask Alone.
+
+ponder Brandon
+approach Brandon Mask down 1
+leave Jonathan Brandon
+leave Ley Brandon
+
+face Julian down
+say Julian Well, this is needlessly dramatic.
+
+move Gwen up 2
+face Gwen down
+move Jonathan left 1
+
+face Jonathan Brandon
+face Ley Brandon
+face Julian Brandon
+
+ponder Mask
+say Mask Let's go.
+
+fight Mask
+
+wait 0.5
+fade in white
+addduplicate Mask Mask left 1
+addduplicate Mask Mask right 1
+addduplicate Mask Mask1 left 1
+addduplicate Mask Mask2 right 1
+face Mask1 down
+face Mask2 down
+face Mask3 down
+face Mask4 down
+fade out
+surprise Brandon
+surprise Jonathan
+surprise Ley
+surprise Julian
+approach Julian
+
+
+
+//repeatable (non-progressors/ambient)
+*
+julian_after_got_artifact
+repeatable
+say Julian I already gave you Gwen's thing. Just leave me be.
+
+*
+dotdotdot
+repeatable
+say Mask as ??? ... ... ...

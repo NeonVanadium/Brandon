@@ -23,7 +23,7 @@ class GameScene: SKScene {
     private var moveStick : SKShapeNode = SKShapeNode.init(circleOfRadius: 80)
     private var box: SKNode = DialogueBox.getBox() //the dialogue box
     private var moved: Bool = false
-    private var nightFilter = Util.createRect(w: Double(UIScreen.main.bounds.width) * 2, h: Double(UIScreen.main.bounds.height) * 2, x: 0, y: 0, color: .black)
+    private var colorFilter = Util.createRect(w: Double(UIScreen.main.bounds.width) * 2, h: Double(UIScreen.main.bounds.height) * 2, x: 0, y: 0, color: .black) //color filter for fade outs and flashes and what not
     private var touchPrompt = EventHandler.getTouchPrompt()
     
     override func sceneDidLoad() {
@@ -31,6 +31,7 @@ class GameScene: SKScene {
         self.lastUpdateTime = 0
         
         //uses the methods on the data class to load and store all assets
+        Data.setupAbilities()
         Data.setupEntities()
         Data.setupEvents()
         Data.loadTiles()
@@ -57,11 +58,11 @@ class GameScene: SKScene {
         
         camera.addChild(touchPrompt)
         
-        nightFilter.alpha = 1
-        nightFilter.physicsBody = nil
-        nightFilter.zPosition = 95
+        colorFilter.alpha = 1
+        colorFilter.physicsBody = nil
+        colorFilter.zPosition = 95
         
-        camera.addChild(nightFilter)
+        camera.addChild(colorFilter)
         
         initMoveStick() //sets up the move stick
         PauseButton.create(inScene: self)
@@ -69,6 +70,7 @@ class GameScene: SKScene {
         nilTouchOrigin()
         
         EventHandler.setScene(self)
+        EventHandler.initPunctuationAnims()
         EventHandler.hostEvent(Data.events["INTRO_TEXT"]!)
         
         Data.loadMap("island", toScene: self)
@@ -212,24 +214,20 @@ class GameScene: SKScene {
 
     func adjustDarkness(_ to: CGFloat){
         
-        nightFilter.alpha = to
+        colorFilter.alpha = to
         //Data.darkness = 0.4
         //nightFilter.isHidden = false
     }
     
-    func fadeInBlack(over t: TimeInterval){
+    func fadeIn(color: UIColor, over t: TimeInterval){
+        colorFilter.fillColor = color
         
-        //TODO-make fade
-        
-        nightFilter.run(.fadeIn(withDuration: t))
-    }
-    
-    private func innerFadeIn(){
+        colorFilter.run( .fadeIn(withDuration: t), completion: { EventHandler.proceed() })
         
     }
     
-    func fadeOutBlack(over t: TimeInterval){
-        nightFilter.run(.fadeOut(withDuration: t))
+    func fadeOut(over t: TimeInterval){
+        colorFilter.run(.fadeOut(withDuration: t), completion: { EventHandler.proceed() })
     }
     
     
@@ -261,7 +259,6 @@ class GameScene: SKScene {
         
         let obj: Interactable? = player!.canInteract()
         
-        
         for t in touches {
             
             let touchPoint = t.location(in: camera!)
@@ -273,10 +270,13 @@ class GameScene: SKScene {
         }
         
         if(EventHandler.inEvent() && !EventHandler.isHappeningActive()){
+
             EventHandler.hideTouchPromptIfVisible()
             EventHandler.proceed()
+            
         }
         else if(!moved && obj != nil){
+
             if(box.isHidden) { //if a dialogue is not curruntly active
                 obj?.lookAt(objectFacing: player!.facing)
                 EventHandler.beginInteraction(with: obj!, fromScene: self)

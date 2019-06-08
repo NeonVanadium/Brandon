@@ -16,6 +16,7 @@ class Interactable: GameObject {
     //combat based things
     var health: Int = 5
     var energy: Int = 0
+    static let maxHealth: Int = 5
     static let maxEnergy: Int = 5
     var isAlly: Bool = false //for use in combat. True if in the allies array. False if in the enemies array.
     var index: Int? //for use in combat. The index this interactable is in in the array.
@@ -23,7 +24,7 @@ class Interactable: GameObject {
     var combatInstance: Combat?
     var curTimerDuration: Double?
     private var curTimerCount: Double?
-    private var queuedAbility: Combat.ability?
+    private var queuedAbility: Combat.Ability?
     private var queuedTarget: Interactable?
     var interrupted = false
     var frontLane = true
@@ -34,6 +35,7 @@ class Interactable: GameObject {
         let split = line.split(separator: ";")
         
         battleBrain = CombatIntelligence.init(for: self, defensiveThreshhold: Int(String(split[2]))!, attackStyle: String(split[3]))
+        battleBrain?.splitAbilityNamesAndAdd(from: String(split[4]))
         
     }
     
@@ -48,12 +50,44 @@ class Interactable: GameObject {
         super.init(coder: aDecoder)
     }
     
+    func toString() -> String { //this string will be written to save files
+        
+        /*
+         ORDER OF PARAMETERS
+         name
+         texture atlas name
+         x position
+         y position
+         name of event, if any
+         the defensive threshhold of the combat intelligence
+         the attacking behavior of the combat intelligence
+         list of known moves
+         */
+        
+        return "\(name!);\(atlasName);\(position.x);\(position.y);\(String(describing: event?.name))\(battleBrain?.defensiveThreshhold);\(battleBrain?.attackFrequencyString(battleBrain!.attackingBehavior));\(battleBrain?.getAbilityNames());"
+        
+        
+    }
+    
     func takeDamage(_ d: Int){
         
         health -= d
+        Combat.combatHit.play()
+        damageKnockback()
         
         //(childNode(withName: "healthLabel")! as! SKLabelNode).text = "\(health)"
         
+    }
+    
+    private func damageKnockback(){
+        if isAlly { //knocks ally left
+            move(by: CGVector(dx: Util.byTiles(-1), dy: 0))
+            run(.wait(forDuration: 0.2), completion: { self.combatMove(to: Data.CombatViewController!.scene!.getFighterPosition(self), duration: 0.1) })
+        }
+        else { //knocks enemy right
+            move(by: CGVector(dx: Util.byTiles(1), dy: 0))
+            run(.wait(forDuration: 0.2), completion: { self.combatMove(to: Data.CombatViewController!.scene!.getFighterPosition(self), duration: 0.1) })
+        }
     }
     
     func modifyEnergy(_ num: Int){
@@ -128,7 +162,7 @@ class Interactable: GameObject {
         
     }
     
-    func use(_ a: Combat.ability, on target: Interactable?){
+    func use(_ a: Combat.Ability, on target: Interactable?){
         
         if(energy >= a.cost){
             
@@ -138,11 +172,13 @@ class Interactable: GameObject {
             queuedTarget = target
             
             startChargeTimer(a.charge)
+            
+            combatInstance!.updateStatusLabel()
         }
         
     }
     
-    private func innerUse(_ a: Combat.ability, on target: Interactable?){
+    private func innerUse(_ a: Combat.Ability, on target: Interactable?){
         
         if(a.targetType == .personal){
             self.takeDamage(a.magnitude)
@@ -178,11 +214,16 @@ class Interactable: GameObject {
         
     }
     
+    func setName(_ s: String) {
+        name = s
+    }
+    
     class CombatIntelligence { //combat behavior
         
-        private var defensiveThreshhold: Int //at what health value does the AI start to play defensviely?
-        private var attackingBehavior: attackFrequency
-        private var owner: Interactable
+        fileprivate var defensiveThreshhold: Int //at what health value does the AI start to play defensviely?
+        fileprivate var attackingBehavior: attackFrequency
+        fileprivate var owner: Interactable
+        var abilities = [Combat.Ability].init() //the list of moves this boy knows
         
         init(for i: Interactable, defensiveThreshhold d: Int, attackStyle a: String){
             defensiveThreshhold = d
@@ -198,13 +239,59 @@ class Interactable: GameObject {
                 attackingBehavior = .slow
             }
             
-            print("created combat intelligence for \(String(describing: i.name)). AF: \(attackingBehavior) DT: \(defensiveThreshhold)")
+            //print("created combat intelligence for \(String(describing: i.name)). AF: \(attackingBehavior) DT: \(defensiveThreshhold)")
+            
+        }
+        
+        func addAbility(_ a: Combat.Ability) {
+            abilities.append(a)
+        }
+        
+        func getAbilityNames() -> String { //for use when saving
+            
+            var list = ""
+            
+            for ability in abilities {
+                
+                list.append("\(ability.name),")
+                
+            }
+            
+            list.removeLast()
+            
+            return list
+            
+        }
+        
+        func splitAbilityNamesAndAdd(from abilityString: String) {
+            
+            for name in abilityString.split(separator: ",") {
+                addAbility(Data.abilities[ String(name) ]!)
+            }
+            
+        }
+        
+        func checkAbilityButtonContains(point: CGPoint) -> Combat.Ability? {
+            
+            for ability in abilities {
+                if ability.buttonContains(point: point){
+                    return ability
+                }
+            }
+            
+            return nil
             
         }
         
         func clone(for i: Interactable) -> CombatIntelligence{
             
-            return CombatIntelligence.init(for: i, defensiveThreshhold: defensiveThreshhold, attackStyle: attackFrequencyString(attackingBehavior))
+            let clone = CombatIntelligence.init(for: i, defensiveThreshhold: defensiveThreshhold, attackStyle: attackFrequencyString(attackingBehavior))
+            
+            for ability in abilities {
+                clone.addAbility(ability)
+            }
+            
+            return clone
             
         }
         
@@ -218,30 +305,52 @@ class Interactable: GameObject {
         
         func considerAttack(inCombat c: Combat) -> Bool {
             
-            print("\(owner.energy) against \(attackingBehavior.rawValue)")
-            
             if( owner.energy >= attackingBehavior.rawValue ) {
                 
-                print("\(owner.name) attacked")
+                for ability in abilities {
+                    
+                    if ability.targetType == .enemy {
+                        owner.use(ability, on: determineWeakest(inCombat: c))
+                    }
+                    
+                }
                 
-                owner.use(Combat.basicAttack, on: getOpposingTeam(fromCombat: c).first!)
+                //owner.use(Data.abilities["attack"]!, on: getOpposingTeam(fromCombat: c).first!)
                 return true
             }
             
-            
-            print("\(owner.name) did not attack")
+        
             return false
+            
+        }
+        
+        func determineWeakest(inCombat c: Combat) -> Interactable {
+            var curWeakest: Interactable?
+            
+            for member in getOpposingTeam(fromCombat: c) {
+                if curWeakest == nil || member.health < curWeakest!.health {
+                    curWeakest = member
+                }
+            }
+            
+            return curWeakest!
             
         }
         
         func considerDefense(inCombat c: Combat) -> Bool {
             if (owner.health <= defensiveThreshhold && !((getOpposingTeam(fromCombat: c).first?.health)! < owner.health)){
                 
-                owner.use(Combat.heal, on: nil)
+                for ability in abilities {
+                    
+                    if ability.targetType == .personal  { //gets ability, if present, that targets self. These will always be defensives/heals
+                        owner.use(ability, on: nil)
+                    }
+                    
+                }
+                
                 return true
             }
             
-            print("\(owner.name) did not defend")
             return false
             
         }
@@ -255,7 +364,7 @@ class Interactable: GameObject {
             }
         }
         
-        private func attackFrequencyString(_ a: attackFrequency) -> String{
+        fileprivate func attackFrequencyString(_ a: attackFrequency) -> String{
             if(a.rawValue == 3){
                 return "relentless"
             }
@@ -270,6 +379,10 @@ class Interactable: GameObject {
             
             case relentless = 3, measured = 4, slow = 5
             
+        }
+        
+        enum targetingLogic {
+            case weakest 
         }
         
     }
