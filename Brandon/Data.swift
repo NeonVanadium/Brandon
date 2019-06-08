@@ -66,8 +66,12 @@ class Data{
             //split the event into the name and the body
             let split = String(eventSubstring).split(separator: "\n", maxSplits: 1, omittingEmptySubsequences: true)
             
+            let eventName = String(split[0])
+            
             //drop first gets rid of the '/'
-            events[String(split[0])] = Event.init(String(split[1]))
+            events[eventName] = Event.init(String(split[1]))
+            
+            events[eventName]!.name = eventName
         }
     }
     
@@ -182,6 +186,22 @@ class Data{
         if(tiles[key] == nil){
             fatalError("Entity \(key) does not exist.")
         }
+    }
+    
+    static func save() {
+        
+        let scene = GameViewController!.scene!
+        
+        for child in scene.children {
+            
+            if child is Interactable {
+                print( ( child as! Interactable ).toString() )
+            }
+            
+        }
+        
+        EventHandler.notify("Game saved.", in: scene)
+        
     }
 
 

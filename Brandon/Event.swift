@@ -15,17 +15,16 @@ protocol EventPart{} //protocols are like events. The purpose of this one is jus
 
 class Event{
     
-    let name: String
+    var name: String!
     private var parts: [EventPart] = [EventPart]()
     var expires: Bool = true //Is this event only playable a single time
     public static var currentlyHappening = false //is a happening currently being run
-    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam", "notify", "join", "leave", "surprise", "confuse", "ponder", "task", "addduplicate", "fade"]
+    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam", "notify", "join", "leave", "surprise", "confuse", "ponder", "task", "addduplicate", "fade", "save"]
     
     init(_ eventText: String){
         
         let lines = eventText.split(separator: "\n")
         
-        name = String(lines[1])
         
         for line in lines {
             
@@ -557,6 +556,11 @@ class Event{
                 else {
                     Data.GameViewController!.scene!.fadeOut(over: 0.5)
                 }
+                
+            }
+            else if parts[0] == "save" {
+                
+                Data.save()
                 
             }
             

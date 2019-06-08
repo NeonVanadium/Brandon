@@ -65,6 +65,12 @@ class Util{
         
     }
     
+    static func floatToTile(_ f: CGFloat) -> Int {
+        let truncated = Int(f)
+        
+        return truncated / Data.tileSideLength
+    }
+    
     static func getScreenPosition(_ p: screenPosition) -> CGFloat{
         
         let sdim = UIScreen.main.bounds //sdim for screen dimensions

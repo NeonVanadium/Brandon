@@ -40,6 +40,8 @@ class GameObject: SKNode{
         
         atlasName = String(components[1])
         
+        
+        
         atlas = SKTextureAtlas.init(named: atlasName)
         
         setup(withAtlas: atlas!)

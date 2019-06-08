@@ -62,10 +62,16 @@ class Interactable: GameObject {
          the defensive threshhold of the combat intelligence
          the attacking behavior of the combat intelligence
          list of known moves
-         */
+        */
         
-        return "\(name!);\(atlasName);\(position.x);\(position.y);\(String(describing: event?.name))\(battleBrain?.defensiveThreshhold);\(battleBrain?.attackFrequencyString(battleBrain!.attackingBehavior));\(battleBrain?.getAbilityNames());"
+        let xPosition = Util.floatToTile(position.x)
+        let yPosition = Util.floatToTile(position.y)
+        let eventName = event?.name
+        let defensiveThreshhold = battleBrain!.defensiveThreshhold
+        let attackingBehavior = battleBrain!.attackFrequencyString(battleBrain!.attackingBehavior)
+        let abilities = battleBrain!.getAbilityNames()
         
+        return "\(name!);\(atlasName);\(xPosition);\(yPosition);\(eventName);\(defensiveThreshhold);\(attackingBehavior);\(abilities);"
         
     }
     

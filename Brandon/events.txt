@@ -21,6 +21,7 @@ confuse Brandon
 
 task Brandon Julian You've lost your memory. You don't know where you are. Find out.
 notify Tap and hold to access the movement stick. Drag finger to move around.
+save
 
 *
 firstfight
@@ -85,6 +86,7 @@ join Jonathan Brandon
 add Ley 15 15
 assign Ley ley_intro
 task Brandon Ley Find Jonathan's friend, to the east-northeast of where you woke up.
+save
 
 *
 ley_intro
@@ -124,6 +126,7 @@ assign Gwen gwen_intro
 
 task Brandon Gwen Find Gwen on the northern shore.
 leave Jonathan Brandon
+save
 
 *
 gwen_intro
@@ -166,7 +169,8 @@ face Gwen right
 task Brandon Gwen Return the artifact to Gwen, on the northern shore.
 assign Gwen gwen2
 
-*gwen2
+*
+gwen2
 
 //cleanup
 remove Julian
@@ -258,6 +262,7 @@ face Julian up
 task Brandon Julian Food. Julian's got some, to the east of your meeting point with Jon and Ley.
 join Jonathan Brandon
 remove Ley
+save
 
 *
 julian2
