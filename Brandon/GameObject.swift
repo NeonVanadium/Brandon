@@ -28,11 +28,26 @@ class GameObject: SKNode{
     public static var WALKSPEED: Int = 3;
     
     var clones = 0 //the number of clones of this Entity
-    var isClone = false
+    var cloneOf: GameObject?
+    let isClone: Bool
     
     init(multiframeFrom line: String){ //for objects with multiple frames
         
+        /*
+         ORDER OF PARAMETERS
+         name
+         texture atlas name
+         x position
+         y position
+         name of event, if any
+         the defensive threshhold of the combat intelligence
+         the attacking behavior of the combat intelligence
+         list of known moves
+         */
+        
         let components = line.split(separator: ";")
+        
+        isClone = false
         
         super.init()
         
@@ -40,7 +55,7 @@ class GameObject: SKNode{
         
         atlasName = String(components[1])
         
-        
+        position = Util.positionByTileCount(x: Int(String(components[2]))!, y: Int(String(components[3]))!)
         
         atlas = SKTextureAtlas.init(named: atlasName)
         
@@ -49,15 +64,19 @@ class GameObject: SKNode{
     
     init(multiframeCopyFrom other: GameObject){
         
-        if(other.clones > 9) {
-            fatalError("Cannot have more than 9 clones of \(other.name!)")
-        }
-        
         atlas = other.atlas
         atlasName = other.atlasName
         
+        self.isClone = true
+        other.clones += 1
+        self.clones = other.clones
+        cloneOf = other
+        
         super.init()
-        name = String(other.name!)
+        name = String("\(other.name!)\(other.clones)")
+        print(name!)
+        
+        position = other.position
         
         setup(withAtlas: atlas!)
         
@@ -137,6 +156,8 @@ class GameObject: SKNode{
         b.physicsBody?.allowsRotation = false
         b.physicsBody?.isDynamic = false
         
+        isClone = false
+        
         super.init()
         
         setBody(b)
@@ -207,6 +228,7 @@ class GameObject: SKNode{
             
             self.run(SKAction.move(by: Yvector, duration: Yduration), completion: {
                 
+                self.updateZPosition()
                 self.standStill()
                 self.lookAt(approached)
                 EventHandler.proceed()

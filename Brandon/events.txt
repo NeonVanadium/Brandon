@@ -1,14 +1,17 @@
 *
+LOAD_SUCCESSFUL_TEXT
+;Load successful.
+fade out
+
+*
 INTRO_TEXT
-rotate Brandon 90
 face Brandon left
 add Julian 4 7
 face Julian up
 assign Julian firstfight
 ;APRIL 29. 1:30AM. Somewhere in the Atlantic.
 
-darkness day
-rotate Brandon 0
+fade out
 wait 0.5
 face Brandon right
 wait 0.5
@@ -27,7 +30,9 @@ save
 firstfight
 
 surprise Julian
-say Julian as (Stranger) A new arrival?
+say Julian as (Stranger) You're...
+say Julian as (Stranger) You look confused. Do you remember anything?
+confuse Brandon
 add Jonathan 8 8
 
 // Jonathan arrives on scene
@@ -39,21 +44,30 @@ say Julian as (Stranger) Jonathan!
 say Jonathan Julian, get away from him.
 
 face Julian Brandon
-say Julian Listen, you need to come with me. We can get out of here! We can-
-//move Jonathan left 1
+say Julian Listen, I can explain everything. You need to come with me!
+move Jonathan left 1
 face Julian Jonathan
-face Jonathan down
-say Jonathan Don't trust him, arrival.
-face Julian right
-wait 0.2
+face Jonathan Julian
+say Jonathan Don't trust him, arrival. The last one he took died.
+surprise Julian
 face Julian Brandon
 say Julian Fine! I'll fight you both if I have to!
+
 surprise Jonathan
 approach Jonathan Julian up 1
 say Jonathan Arrival, I'll fight with you. Defend yourself!
 join Jonathan Brandon
 
+fade in black
+;You are about to enter combat.
+;Combat is real-time. As seconds pass, you will gain energy points.
+;All abilities, once activated, have a charge timer.
+;If someone is attacked while their ability charges, the ability is cancelled.
+;Buttons at the bottom of your screen indicate, when blue, that a given ability can be used.
+;Good luck.
+
 fight Julian
+fade out
 
 add Jonathan 4 8
 face Julian Jonathan
@@ -97,14 +111,13 @@ approach Jonathan Ley right 1
 approach Brandon Ley down 2
 face Jonathan Brandon
 
-darkness day
-
 fade out
 
 face Jonathan Ley
 say Jonathan This is Ley.
 
 say Ley New arrival, hm?
+say Ley I'm Ley, as Jon said. Nice to meet you.
 confuse Ley
 move Ley down 1
 say Ley What's this mark on your forehead?
@@ -114,11 +127,16 @@ ponder Brandon
 approach Jonathan Brandon right 1
 face Jonathan Brandon
 face Jonathan Brandon
-say Jonathan You don't remember? Amnesia isn't unheard of among new arrivals. You'll want to find Gwen. Her gift could help you.
-say Ley Ah, right. On the island, there are some... forces beyond our understanding.
-say Ley Some that arrive have special abilities, called gifts. Gwen is one of those people. We call her an enchantress.
-say Ley She might be able to help you restore your memory. She usually hangs out alone, on the northern shore.
-say Jonathan She's rather solitary, and doesn't like being approached in groups. So, I'll stay behind, but we'll keep watch over you.
+say Jonathan He doesn't remember.
+say Ley Well, Amnesia isn't unheard of among new arrivals.
+say Jonathan Could Gwen help?
+say Ley Probably so. A good idea.
+confuse Brandon
+say Ley The short of it is that there are supernatural forces here on the island.
+say Ley Some that arrive have supernatural abilities, too, called gifts. Gwen is one of them.
+say Ley She might be able to help you restore your memory. She's solitary, so she usually hangs out alone, on the northern shore.
+say Jonathan Right, so, I'll stay behind.
+say Ley But we'll be watching over you.
 
 add Gwen 12 29
 face Gwen up
@@ -133,7 +151,7 @@ gwen_intro
 remove Jonathan
 remove Ley
 ponder Gwen
-say Gwen That mark...
+say Gwen That face... that mark...
 say Gwen So you're the new arrival. What do you need from me?
 ponder Brandon
 face Gwen up
@@ -183,12 +201,11 @@ say Mask I see.
 face Brandon Gwen
 face Mask Brandon
 face Gwen Brandon
-say Gwen This man is called mask. I am sure you two will become very well acquainted.
-say Gwen But that is not why you are here. Hold still.
+say Gwen Do not worry about him. He is not why you are here. Hold still.
 
 face Gwen left
 ;(Gwen slides a ring onto her finger.)
-face Gwen down
+face Gwen Brandon
 ;(She places her hand on your head.)
 fade in purple
 ;NAME: Brandon.   ORIGIN: Atlantic ocean.   AGE: < 1 day.
@@ -205,7 +222,8 @@ move Mask down 6
 remove Mask
 face Brandon Gwen
 ponder Gwen
-face Brandon left
+face Brandon Gwen
+move Gwen down 1
 move Gwen left 6
 remove Gwen
 confuse Brandon
@@ -220,7 +238,7 @@ ponder Brandon
 say Ley Your name is Brandon, but you were born in the ocean, and you're less than a day old?
 ponder Ley
 say Ley Well, if that last thing is true, I certainly feel bad for your mother. You look to be in your twenties.
-say Ley But anyway, you've met all of us on the island right now. Jon's waiting back where you met me in the first place.
+say Ley But anyway, you've met all of us on the island now. Jon's waiting back where you met me in the first place.
 
 task Brandon Jonathan Return to Jonathan, where you first met Ley.
 add Jonathan 15 15
@@ -272,6 +290,7 @@ approach Ley Brandon down 1
 face Jonathan Julian
 face Ley Julian
 
+face Julian Brandon
 surprise Julian
 say Julian I'm not doing anything! I'm just eating! It's my turn!
 say Jonathan We're not here to hurt you, Julian. We were just wondering if there were any leftovers.
@@ -284,6 +303,9 @@ say Julian ...alright. Here, take some.
 approach Mask Julian up 10
 approach Gwen Mask left 1
 approach Mask Julian up 3
+
+faceall Mask
+
 approach Gwen Mask left 1
 face Gwen Julian
 surprise Julian
@@ -322,8 +344,10 @@ say Mask Let's go.
 
 fight Mask
 
+//the gift of the mask revealed.
 wait 0.5
-fade in white
+fade in red
+focus Mask
 addduplicate Mask Mask left 1
 addduplicate Mask Mask right 1
 addduplicate Mask Mask1 left 1
@@ -337,8 +361,161 @@ surprise Brandon
 surprise Jonathan
 surprise Ley
 surprise Julian
-approach Julian
 
+//the escape
+approach Julian Brandon down 2
+say Julian Jonathan, Ley, new guy, run with me!
+faceall Julian
+
+move Julian down 7
+remove Julian
+surprise Jonathan
+surprise Ley
+move Jonathan down 7
+remove Jonathan
+move Ley down 6
+remove Ley
+move Brandon down 7
+remove Brandon
+
+//ominous chatter
+approach Gwen Mask up 2
+
+say Gwen Excellent.
+say Gwen The mask is functioning wonderfully. It is worth the unforseen side-effect.
+faceall Gwen
+say Mask Shall I pursue them?
+say Gwen You shall.
+face Gwen right
+say Gwen There has only ever been six at once, as is the rule. With the mask, the rules have been broken. Hopefully the end is near.
+fade in black
+
+remove Gwen
+remove Mask
+remove Mask1
+remove Mask2
+remove Mask3
+remove Mask4
+
+add Brandon 2 2
+approach Jonathan Brandon up 1
+approach Ley Jonathan left 1
+add Julian 4 5
+focus Brandon
+fade out
+confuse Jonathan
+confuse Ley
+say Ley I knew Gwen could pull of some magic, but that was...
+say Julian I can explain.
+faceall Julian
+
+assign Julian julian3
+task Brandon Julian See what Julian has to say about what just happened.
+save
+
+*
+julian3
+faceall Julian
+say Julian I know what the mask does. That is my gift.
+confuse Jonathan
+say Jonathan I didn't know you had a gift. I thought the only one now who did was Gwen.
+say Julian Mine is hard to show. Clairvoyance. I get visions of the island's past and present.
+say Julian Seeing that mask... I had one. I saw Gwen putting it one someone.
+face Julian left
+ponder Julian
+face Julian Brandon
+say Julian I saw her put it on you, new guy.
+surprise Jonathan
+surprise Ley
+
+//discussion of what brandon is
+say Jonathan But Brandon only just got here. That's impossible.
+say Julian Well, it wasn't exactly the arrival--Brandon, you said. The person who put on the mask didn't have the forehead tattoo.
+face Brandon down
+say Ley So... is Brandon a clone? One of the men made by the mask?
+say Julian Possibly. But I don't think so. Mask's clones appeared next to him. Brandon washed ashore like a normal arrival.
+say Julian Do any of you have any memory of Mask before he put the thing on?
+ponder Jonathan
+ponder Ley
+say Ley No, I don't.
+say Julian Neither did I. But in the visions I get, I can see him. In fact, he only put the mask on a couple days ago.
+say Jonathan But Ley and I have been here for months.
+say Julian Me too. Some Gift edited our memories, so we don't remember a time before the mask.
+
+//Julian realizes Mask is doing stuff
+face Julian up
+surprise Julian
+faceall Julian
+face Julian down
+say Julian Mask just made... tons of clones. They're moving all over the island. I can't see them with my eyes, but my gift just told me where they were.
+say Julian Gwen created the mask. She's the only one who can explain. Let's move together.
+fade in black
+join Julian Brandon
+join Jonathan Brandon
+join Ley Brandon
+
+
+//cleanup
+add Gwen 40 28
+
+assign Mask Mask_rant
+addduplicate Mask 39 20
+addduplicate Mask 40 20
+addduplicate Mask 41 20
+
+add Mask 26 26
+assign Mask Mask1
+
+toggleencounters
+notify The clones of Mask now lurk about the island. They may attack you as you move about.
+wait 2
+fade out
+task Brandon Gwen Seek out Gwen. Find answers.
+save
+
+*
+Mask1
+fade in black
+remove Brandon
+approach Brandon Mask right 2
+approach Julian Brandon up 1
+approach Jonathan Brandon down 1
+approach Ley Jonathan down 1
+faceall Mask
+face Mask Brandon
+fade out
+say Mask The island will be purged.
+fade in white
+addduplicate Mask Mask up 1
+addduplicate Mask Mask down 1
+face Mask4 Brandon
+face Mask5 Brandon
+fade out
+wait 0.5
+
+fight Mask Mask4 Mask5
+
+wait 0.5
+fade in white
+remove Mask4
+remove Mask5
+fade out
+
+say Mask Pointless.
+fade in red 0.3
+say Mask The more damage I take, the more the mask's power grows.
+
+fade in white
+addduplicate Mask Mask up 1
+addduplicate Mask Mask down 1
+addduplicate Mask Mask up 2
+addduplicate Mask Mask down 2
+face Mask4 left
+face Mask5 left
+face Mask6 left
+face Mask7 left
+
+fade out
 
 
 //repeatable (non-progressors/ambient)
@@ -351,3 +528,41 @@ say Julian I already gave you Gwen's thing. Just leave me be.
 dotdotdot
 repeatable
 say Mask as ??? ... ... ...
+
+*
+Mask_rant
+repeatable
+approach Julian Brandon left 1
+say Mask as Clone We are many. The island will be purged.
+
+face Julian up
+say Julian Let's go!
+fight Mask1 Mask2 Mask3
+
+fade in black
+face Julian up
+remove Mask1
+remove Mask2
+remove Mask3
+fade out
+fade in red
+addduplicate Mask 39 20
+assign Mask1 Mask_rant
+fade out
+fade in red
+addduplicate Mask 40 20
+assign Mask2 Mask_rant
+fade out
+fade in red
+addduplicate Mask 41 20
+assign Mask3 Mask_rant
+fade out
+surprise Brandon
+face Julian Brandon
+say Julian It looks like these clones are going to keep regenerating.
+say Julian Since they regenerated, they're definitely not the original. We need to find him.
+fade in black
+notify Mask's clones block the way forward.
+remove Julian
+fade out
+task Brandon Mask Find and destroy the original Mask.

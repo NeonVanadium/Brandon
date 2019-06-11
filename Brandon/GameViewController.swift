@@ -12,7 +12,8 @@ import GameplayKit
 
 class GameViewController: UIViewController {
     
-    var scene: GameScene?
+    internal var scene: GameScene?
+    internal var loadFile: String?
 
     override func viewDidLoad() {
         
@@ -22,7 +23,11 @@ class GameViewController: UIViewController {
     
     }
     
-    func loadScene(){
+    func loadScene(fromSave: String?){
+        
+        if(fromSave != nil) {
+            loadFile = Util.loadFile(name: fromSave!, extension: "txt")
+        }
         
         // Load 'GameScene.sks' as a GKScene. This provides gameplay related content
         // including entities and graphs.
@@ -58,6 +63,9 @@ class GameViewController: UIViewController {
     }
     
     func startCombat(against opponents: [Interactable]){
+        
+        print("started combat")
+        
         self.performSegue(withIdentifier: "startCombat", sender: self)
         Data.CombatViewController?.scene!.setup(against: opponents)
     }

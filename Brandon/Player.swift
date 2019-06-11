@@ -13,6 +13,7 @@ class Player : Interactable {
     
     private var party: [Interactable] = [Interactable].init()
     private var task: Task?
+    private var combatTarget: Interactable?
     
     override init(multiframeFrom line: String) {
         super.init(multiframeFrom: line)
@@ -32,6 +33,21 @@ class Player : Interactable {
     
     func getParty() -> [Interactable]{
         return party
+    }
+    
+    func getPartyNames() -> String {
+        var nameList = ""
+    
+        for member in party {
+            nameList.append("\(member.name!),")
+        }
+        
+        if(nameList != ""){ //if it's not empty
+            nameList.removeLast() //fenceposting of final comma
+        }
+        
+        return nameList
+        
     }
     
     func assignTask(_ t: Task){
@@ -61,6 +77,52 @@ class Player : Interactable {
     func taskArrow(inScene s: GameScene){
         task?.showDirectorTriangle(inScene: s)
     }
+    
+    override func interactabilitySetup(fromLine: String) {
+        super.interactabilitySetup(fromLine: fromLine)
+        
+        let split = fromLine.split(separator: ";", maxSplits: 12, omittingEmptySubsequences: false)
+        
+        if split.count > 8 { //eg is the player
+            
+            let party = String(split[split.count - 1])
+            
+            for name in party.split(separator: ",") {
+                print("added \(name)")
+                addToParty(Data.entities[String(name)] as! Interactable)
+            }
+        }
+        
+    }
+    
+    override func toString() -> String { //this string will be written to save files
+        
+        /*
+         ORDER OF PARAMETERS
+         name
+         texture atlas name
+         x position
+         y position
+         name of event, if any
+         the defensive threshhold of the combat intelligence
+         the attacking behavior of the combat intelligence
+         list of known moves
+         partymembers
+         task
+         */
+        
+        //var taskDesc = ""
+        //var taskTargetName
+        
+        var str = super.toString()
+        
+        str.append(";\(getPartyNames())")
+        
+        return str
+        
+    }
+    
+    
     
     func canInteract() -> Interactable?{
         

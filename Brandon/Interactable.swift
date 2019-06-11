@@ -29,25 +29,43 @@ class Interactable: GameObject {
     var interrupted = false
     var frontLane = true
     
+    private var combatTarget: Interactable?
+    
     override init(multiframeFrom line: String) {
         super.init(multiframeFrom: line)
         
-        let split = line.split(separator: ";")
-        
-        battleBrain = CombatIntelligence.init(for: self, defensiveThreshhold: Int(String(split[2]))!, attackStyle: String(split[3]))
-        battleBrain?.splitAbilityNamesAndAdd(from: String(split[4]))
+        interactabilitySetup(fromLine: line)
         
     }
     
     override init(multiframeCopyFrom other: GameObject) {
         super.init(multiframeCopyFrom: other)
         
+        if (other is Interactable) {
+            event = (other as! Interactable).event
+        }
+        
         battleBrain = (other as! Interactable).battleBrain!.clone(for: self)
+        
+        print(name!)
        
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    func interactabilitySetup(fromLine: String) {
+        let split = fromLine.split(separator: ";", maxSplits: 10, omittingEmptySubsequences: false)
+        
+        position = Util.positionByTileCount(x: Int(String(split[2]))!, y: Int(String(split[3]))!)
+        
+        if(!split[4].isEmpty){
+            event = Data.events[String(split[4])]
+        }
+        
+        battleBrain = CombatIntelligence.init(for: self, defensiveThreshhold: Int(String(split[5]))!, attackStyle: String(split[6]))
+        battleBrain?.splitAbilityNamesAndAdd(from: String(split[7]))
     }
     
     func toString() -> String { //this string will be written to save files
@@ -66,12 +84,19 @@ class Interactable: GameObject {
         
         let xPosition = Util.floatToTile(position.x)
         let yPosition = Util.floatToTile(position.y)
-        let eventName = event?.name
+        var eventName: String = ""
+        if(event != nil){
+            eventName = event!.name
+        }
         let defensiveThreshhold = battleBrain!.defensiveThreshhold
         let attackingBehavior = battleBrain!.attackFrequencyString(battleBrain!.attackingBehavior)
         let abilities = battleBrain!.getAbilityNames()
+        var cloneStr = ""
+        if isClone {
+            cloneStr = "(CLONE) "
+        }
         
-        return "\(name!);\(atlasName);\(xPosition);\(yPosition);\(eventName);\(defensiveThreshhold);\(attackingBehavior);\(abilities);"
+        return "\(cloneStr)\(name!);\(atlasName);\(xPosition);\(yPosition);\(eventName);\(defensiveThreshhold);\(attackingBehavior);\(abilities);"
         
     }
     
@@ -220,6 +245,15 @@ class Interactable: GameObject {
         
     }
     
+    func setTarget(to: Interactable?) {
+        combatTarget = to
+        combatInstance!.moveTargetOutline(to: to)
+    }
+    
+    func getTarget() -> Interactable? {
+        return combatTarget
+    }
+    
     func setName(_ s: String) {
         name = s
     }
@@ -251,6 +285,14 @@ class Interactable: GameObject {
         
         func addAbility(_ a: Combat.Ability) {
             abilities.append(a)
+        }
+        
+        func removeAbility(named: String) {
+            for ability in abilities {
+                if ability.name == named {
+                    
+                }
+            }
         }
         
         func getAbilityNames() -> String { //for use when saving

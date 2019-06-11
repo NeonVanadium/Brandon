@@ -1,0 +1,7 @@
+true
+Brandon;brandon;4;4;;0;relentless;attack,interrupt;;Julian,Jonathan,Ley
+Gwen;gwen;40;28;;4;measured;attack,heal;
+(CLONE) Mask1;mask;39;20;Mask_rant;0;relentless;heavyAttack;
+(CLONE) Mask2;mask;40;20;Mask_rant;0;relentless;heavyAttack;
+(CLONE) Mask3;mask;41;20;Mask_rant;0;relentless;heavyAttack;
+Mask;mask;26;26;Mask1;0;relentless;heavyAttack;

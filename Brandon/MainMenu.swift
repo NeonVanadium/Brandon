@@ -14,21 +14,25 @@ class MainMenu: SKScene{
     var viewController : MainMenuViewController?
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
-    var startGameButton: SKNode!
+    var newGameButton: SKNode!
+    var loadGameButton: SKNode!
     
     override func sceneDidLoad(){
         
-        print("Loaded Main Menu")
-        startGameButton = self.childNode(withName: "startGameButton")!
+        newGameButton = self.childNode(withName: "newGameButton")!
+        loadGameButton = self.childNode(withName: "loadGameButton")!
         
     }
     
     func touchDown(_ t: UITouch){
-        if(startGameButton.contains(t.location(in: self))){ //if the touch is within the bounds of the startGameButton
-            //print("touched")
-            //scene?.view?.presentScene(SKScene(fileNamed: "GameScene"))
-            viewController?.startGame()
+        if(newGameButton.contains(t.location(in: self))){ //if the touch is within the bounds of the startGameButton
+            viewController?.startGame(loading: false)
         }
+        
+        else if(loadGameButton.contains(t.location(in: self))){
+            viewController?.startGame(loading: true)
+        }
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

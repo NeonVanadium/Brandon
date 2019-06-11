@@ -15,10 +15,11 @@ class Combat: SKScene{
     var viewController: CombatViewController!
     var allies: [Interactable] = [Interactable].init()
     var enemies: [Interactable] = [Interactable].init()
-    var allyLabel = SKLabelNode.init(text: "allies")
-    var enemyLabel = SKLabelNode.init(text: "enemies")
+    //var allyLabel = SKLabelNode.init(text: "allies")
+    //var enemyLabel = SKLabelNode.init(text: "enemies")
     var timer: Double = 0.0
     private var player: Interactable!
+    private var playerTargetOutline = Util.createOutline(w: Data.tileSideLength, h: Data.tileSideLength + 10, color: .red)
     
     static var combatHit: AVAudioPlayer!
     
@@ -49,7 +50,6 @@ class Combat: SKScene{
         //Set up brandon (the player)
         player = Interactable.init(multiframeCopyFrom: Data.entities["Brandon"]!)
         
-        
         //set up the player's buttons
         
         var buttonCount = 0
@@ -67,31 +67,25 @@ class Combat: SKScene{
         }
         
         //set up ally team
-        allies.append(player)
         
-        Util.setupLabel(allyLabel)
+        /*Util.setupLabel(allyLabel)
         allyLabel.position.x = Util.getScreenPosition(.left)
         allyLabel.position.y = Util.getScreenPosition(.top)
-        addChild(allyLabel)
+        addChild(allyLabel)*/
         
-        for member in (Data.entities["Brandon"] as! Player).getParty() {
-            let clone = Interactable.init(multiframeCopyFrom: member)
+        for ally in (Data.entities["Brandon"] as! Player).getParty() {
             
-            allies.append(clone)
-        }
-        
-        for ally in allies {
-            
-            addAsAlly(ally)
+            addAsAlly( Interactable.init(multiframeCopyFrom: ally) )
             
         }
+        addAsAlly(player)
         
         //Set up enemy team
         
-        Util.setupLabel(enemyLabel)
+        /*Util.setupLabel(enemyLabel)
         enemyLabel.position.x = Util.getScreenPosition(.right)
         enemyLabel.position.y = Util.getScreenPosition(.top)
-        addChild(enemyLabel)
+        addChild(enemyLabel)*/
         
         for opponent in opponents{
             
@@ -111,6 +105,8 @@ class Combat: SKScene{
         label.position.x = Util.getScreenPosition(.center)
         label.position.y = Util.getScreenPosition(.bottom)
         addChild(label)
+        
+        playerTargetOutline.name = "targetOutline"
         
         self.incrementTime() //begins the timer
         
@@ -157,6 +153,7 @@ class Combat: SKScene{
         i.combatInstance = self
         i.index = allies.count
         i.face(.right)
+        i.updateZPosition()
         allies.append(i)
         scene?.addChild(i)
     }
@@ -167,21 +164,37 @@ class Combat: SKScene{
         i.combatInstance = self
         i.index = enemies.count
         i.face(.left)
+        i.updateZPosition()
         enemies.append(i)
         scene?.addChild(i)
     }
     
-    private func updateStatusLabel(_ l: SKLabelNode, forTeam t: [Interactable]){
+    /*private func updateStatusLabel(_ l: SKLabelNode, forTeam t: [Interactable]){
         var text = ""
         
         for character in t {
             text.append("\(character.name!)\n")
         }
-        
-    }
+    }*/
     
     func updateStatusLabel(){
-        label.text = "HEALTH: \(player.health)\nENERGY: \(player.energy)"
+        if (player.health <= 0){
+            label.text = "Player is dead."
+        }
+        else {
+            label.text = "HEALTH: \(player.health)\nENERGY: \(player.energy)"
+            
+            for ability in player.battleBrain!.abilities {
+                
+                if player.energy >= ability.cost {
+                    ability.fillButton()
+                }
+                else {
+                    ability.clearButton()
+                }
+                
+            }
+        }
     }
     
     private func setupFighter(_ fighter: Interactable){
@@ -203,11 +216,7 @@ class Combat: SKScene{
 
     func damageUpkeep(on i: Interactable){
         
-        updateStatusLabel(allyLabel, forTeam: allies)
-        updateStatusLabel(enemyLabel, forTeam: enemies)
-        
         if(!isOver && i.health <= 0 && (allies.contains(i) || enemies.contains(i)) ) {
-            
             
             if(i.isAlly){
                 allies.remove(at: allies.index(of: i)!)
@@ -216,11 +225,22 @@ class Combat: SKScene{
                 enemies.remove(at: enemies.index(of: i)!)
             }
             
+            if i.isClone { Data.deallocateClone(i) }
+            
+            if( i.childNode(withName: "targetOutline") != nil){
+                player.setTarget(to: nil)
+            }
+            
+            updateAllPositions()
             scene?.removeChildren(in: [i])
             checkIfCombatOver()
             
         }
         
+    }
+    
+    func isCombatOver() -> Bool {
+        return isOver
     }
     
     private func checkIfCombatOver(){
@@ -238,12 +258,13 @@ class Combat: SKScene{
         
         isOver = true
         
-        removeAllChildren()
-        
         for i in allies + enemies {
             i.removeAllActions()
             i.removeFromParent()
         }
+        
+        
+        removeAllChildren()
         
         allies.removeAll()
         enemies.removeAll()
@@ -260,10 +281,7 @@ class Combat: SKScene{
     
     private func globalEnergyUpkeep(){
         
-        for unit in allies {
-            unit.modifyEnergy(1)
-        }
-        for unit in enemies{
+        for unit in allies + enemies {
             unit.modifyEnergy(1)
         }
         updateStatusLabel()
@@ -279,23 +297,40 @@ class Combat: SKScene{
             
             x = Util.byTiles(-2)
             
-            let startPoint = Util.byTiles(allies.count)
+            let height = Util.byTiles(allies.count)
             
-            y = startPoint - (Util.byTiles(i.index!) * 2)
+            let startPoint = height / 2
+            
+            y = startPoint - (Util.byTiles(allies.index(of: i) ?? 0))
             
         }
         else {
             x = Util.byTiles(2)
             
-            let startPoint = Util.byTiles(enemies.count)
+            let height = Util.byTiles(enemies.count)
             
-            y = startPoint - (Util.byTiles(i.index!) * 2)
+            let startPoint = height / 2
             
+            y = startPoint - (Util.byTiles(enemies.index(of: i) ?? 0))
         }
         
-        
-        
         return CGPoint(x: x, y: y)
+        
+    }
+    
+    func updateAllPositions() {
+        for unit in allies + enemies {
+            unit.position = getFighterPosition(unit)
+        }
+    }
+    
+    func moveTargetOutline(to: Interactable?) {
+        //playerTargetOutline.position = to
+        playerTargetOutline.removeFromParent()
+        
+        if to != nil {
+            to!.addChild(playerTargetOutline)
+        }
         
     }
     
@@ -310,13 +345,26 @@ class Combat: SKScene{
         
         let point = t.location(in: self)
         
-        guard let ability = player.battleBrain!.checkAbilityButtonContains(point: point) else { return }
+        if let ability = player.battleBrain!.checkAbilityButtonContains(point: point) { //check player's ability buttons
         
-        if ability.targetType == .enemy {
-            player.use(ability, on: enemies.first!)
+            if ability.targetType == .enemy {
+                
+                if(player.getTarget() == nil) {
+                    player.setTarget(to: enemies.first!)
+                }
+                
+                player.use(ability, on: player.getTarget()!)
+            }
+            else{
+                player.use(ability, on: nil)
+            }
+            
         }
-        else{
-            player.use(ability, on: nil)
+        
+        for unit in allies + enemies { //check if player selected a new target
+            if unit.contains(point) {
+                player.setTarget(to: unit)
+            }
         }
         
     }
@@ -334,7 +382,7 @@ class Combat: SKScene{
         private var button: SKShapeNode!
         
         static let buttonWidth = 150
-        static let buttonHeight = 80
+        static let buttonHeight = 100
         
         init(name n: String, target t: targetType, magnitude m: Int, chargeTime ct: TimeInterval, cost c: Int){
             name = n
@@ -357,6 +405,14 @@ class Combat: SKScene{
             Util.setupLabel(label)
             button.addChild(label)
             
+        }
+        
+        func fillButton() {
+            button.fillColor = .blue
+        }
+        
+        func clearButton() {
+            button.fillColor = .clear
         }
         
         func getButton() -> SKShapeNode {

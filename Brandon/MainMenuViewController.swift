@@ -40,9 +40,14 @@ class MainMenuViewController: UIViewController {
         }
     }
     
-    func startGame(){
+    func startGame(loading: Bool){
         self.performSegue(withIdentifier: "startGame", sender: self)
-        Data.GameViewController!.loadScene()
+        if loading {
+            Data.GameViewController!.loadScene(fromSave: "savefile")
+        }
+        else{
+            Data.GameViewController!.loadScene(fromSave: nil)
+        }
     }
     
     override var shouldAutorotate: Bool {

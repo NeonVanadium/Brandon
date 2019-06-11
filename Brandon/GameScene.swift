@@ -25,8 +25,9 @@ class GameScene: SKScene {
     private var moved: Bool = false
     private var colorFilter = Util.createRect(w: Double(UIScreen.main.bounds.width) * 2, h: Double(UIScreen.main.bounds.height) * 2, x: 0, y: 0, color: .black) //color filter for fade outs and flashes and what not
     private var touchPrompt = EventHandler.getTouchPrompt()
+    internal var randomEncountersActive = false
     
-    override func sceneDidLoad() {
+    override func sceneDidLoad() { //when this boy gets pushed up
         
         self.lastUpdateTime = 0
         
@@ -71,7 +72,14 @@ class GameScene: SKScene {
         
         EventHandler.setScene(self)
         EventHandler.initPunctuationAnims()
-        EventHandler.hostEvent(Data.events["INTRO_TEXT"]!)
+        
+        if(Data.GameViewController!.loadFile == nil) {
+            EventHandler.hostEvent(Data.events["INTRO_TEXT"]!)
+        }
+        else{
+            Data.load(fromFile: Data.GameViewController!.loadFile!, toScene: self)
+            EventHandler.hostEvent(withName: "LOAD_SUCCESSFUL_TEXT")
+        }
         
         Data.loadMap("island", toScene: self)
     }
@@ -144,6 +152,10 @@ class GameScene: SKScene {
         let minDistance: Float = 20
         
         if(abs(vector[0]) > minDistance || abs(vector[1]) > minDistance) { //if the stick is moved enough to move the player
+            
+            if randomEncountersActive && Data.CombatViewController?.scene == nil { //if can encounter randoms and there isn't already a combat scene
+                    encounterCheck()
+            }
             
             moveStick.isHidden = false;
             //player!.run(.move(by: getSpeed(), duration: 0))
@@ -219,8 +231,10 @@ class GameScene: SKScene {
         //nightFilter.isHidden = false
     }
     
-    func fadeIn(color: UIColor, over t: TimeInterval){
+    func fadeIn(color: UIColor, over t: TimeInterval, atOpacity: CGFloat){
         colorFilter.fillColor = color
+        
+        colorFilter.alpha = atOpacity
         
         colorFilter.run( .fadeIn(withDuration: t), completion: { EventHandler.proceed() })
         
@@ -228,6 +242,25 @@ class GameScene: SKScene {
     
     func fadeOut(over t: TimeInterval){
         colorFilter.run(.fadeOut(withDuration: t), completion: { EventHandler.proceed() })
+    }
+    
+    func encounterCheck() {
+        
+        let number = Int.random(in: 0...200)
+        
+        if number == 1 {
+            
+            let enemyCount = Int.random(in: 1...player!.getParty().count)
+            
+            var enemyParty = [Interactable].init()
+            
+            for _ in 1...enemyCount {
+                enemyParty.append( Data.duplicateInteractable(named: "Mask") )
+            }
+            
+            viewContoller?.startCombat(against: enemyParty )
+        }
+        
     }
     
     

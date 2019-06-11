@@ -190,19 +190,87 @@ class Data{
     
     static func save() {
         
+        //TODO
         let scene = GameViewController!.scene!
+        
+        let archiver = NSKeyedArchiver.init(requiringSecureCoding: false)
+        
+        print(scene.randomEncountersActive)
         
         for child in scene.children {
             
             if child is Interactable {
-                print( ( child as! Interactable ).toString() )
+                print( (child as! Interactable).toString() )
+                archiver.encode( (child as! Interactable).toString(), forKey: child.name! )
             }
             
         }
         
-        EventHandler.notify("Game saved.", in: scene)
+        let worked = NSKeyedArchiver.archiveRootObject(archiver, toFile: "savefile.txt")
+        print(worked)
+
+        //print( Util.loadFile(name: "savefile", extension: "txt"))
         
     }
-
+    
+    static func load(fromFile file: String, toScene scene: GameScene){
+        
+        //TODO
+        let path = Bundle.main.path(forResource: "savefile", ofType: "txt")
+        
+        let alltext = Util.loadFile(name: "savefile", extension: "txt").split(separator: "\n", maxSplits: 1, omittingEmptySubsequences: false)
+        
+        let encounters = Bool(String(alltext[0]))!
+        let strings = alltext[1].split(separator: "\n")
+        //guard let strings = NSKeyedUnarchiver.unarchiveObject(withFile: path!) as? [String] else { fatalError("load no load") }
+        
+        scene.randomEncountersActive = encounters
+        print(scene.randomEncountersActive)
+        
+            for line in strings {
+                if line.starts(with: "(CLONE) ") {
+                    
+                    var name = String( line.split(separator: ";", maxSplits: 1, omittingEmptySubsequences: true)[0].split(separator: " ")[1] )
+                    
+                    while name.last!.isNumber {
+                        name.removeLast()
+                    }
+                    
+                    let clone = duplicateInteractable(named: name)
+                    
+                    clone.interactabilitySetup(fromLine: String(line))
+                    
+                    clone.updateZPosition()
+                    
+                    scene.addChild(clone)
+                    
+                }
+                else {
+                    let name = String( line.split(separator: ";", maxSplits: 1, omittingEmptySubsequences: true)[0] )
+                    
+                    let entity = Data.entities[name] as! Interactable
+                    
+                    entity.interactabilitySetup(fromLine: String(line))
+                    entity.updateZPosition()
+                    
+                    if scene.childNode(withName: name) == nil { //so the player, which is hardcoded into the engine, doesn't get added twice
+                        scene.addChild(entity)
+                    }
+                    
+                }
+            
+            }
+    }
+    
+    static func duplicateInteractable(named: String) -> Interactable{
+        return Interactable.init(multiframeCopyFrom: Data.entities[named]!)
+    }
+    
+    static func deallocateClone(_ c: Interactable) {
+        if c.isClone {
+            print("deallocated \(c.name!)")
+            c.cloneOf!.clones -= 1
+        }
+    }
 
 }

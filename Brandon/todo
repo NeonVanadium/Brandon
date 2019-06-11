@@ -1,7 +1,7 @@
 water tile
-when combat moves would overlap, create a queue or some shit and run through them chronologically so people don't yeet into each other center screen
-the lane thing
+
 black cutscene bounds thing
+
 do the like sound position tracker thing so we can effectively manage restarting the audio ya know
 
 if a character has no defensives, don't let it keep trying to defend.
@@ -10,4 +10,4 @@ entities do not change to face the way they are walking in approachMove
 
 saving
 
-check the player's energy gain
+if approach is skipped, snap mover to end location

@@ -19,7 +19,7 @@ class Event{
     private var parts: [EventPart] = [EventPart]()
     var expires: Bool = true //Is this event only playable a single time
     public static var currentlyHappening = false //is a happening currently being run
-    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam", "notify", "join", "leave", "surprise", "confuse", "ponder", "task", "addduplicate", "fade", "save"]
+    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam", "notify", "join", "leave", "surprise", "confuse", "ponder", "task", "addduplicate", "fade", "save", "faceall", "toggleencounters"]
     
     init(_ eventText: String){
         
@@ -209,10 +209,19 @@ class Event{
             
             else if(parts[0] == "assign"){ //assign
                 
-                Data.entityExists(parts[1])
+                //Data.entityExists(parts[1])
                 Data.eventExists(parts[2])
                 
-                (Data.entities[parts[1]]! as! Interactable).event = Data.events[parts[2]]
+                let target: Interactable!
+                
+                if scene.childNode(withName: parts[1]) != nil {
+                    target = scene.childNode(withName: parts[1]) as! Interactable
+                }
+                else {
+                    target = Data.entities[parts[1]] as! Interactable
+                }
+                
+                target.event = Data.events[parts[2]]
                 EventHandler.proceed()
             }
             
@@ -224,9 +233,9 @@ class Event{
             
             else if(parts[0] == "face"){ //face
                 
-                Data.entityExists(parts[1])
+                //Data.entityExists(parts[1])
                 
-                let name = (Data.entities[parts[1]]!).name!
+                let name = parts[1]
                 let facer = scene.childNode(withName: name) as! GameObject
                 
                 switch parts[2]{
@@ -242,7 +251,7 @@ class Event{
                 case "down":
                     facer.face(.down)
                 default:
-                    Data.entityExists(parts[2])
+                    //Data.entityExists(parts[2])
                     
                     let target = scene.childNode(withName: parts[2])!
                     
@@ -305,6 +314,8 @@ class Event{
                             approacher.face(.up)
                             break
                     }
+                    
+                    approacher.updateZPosition()
                     
                     EventHandler.proceed()
                     
@@ -384,6 +395,7 @@ class Event{
                 let camera = scene.camera!
                 camera.removeFromParent()
                 (scene.childNode(withName: parts[1])! as! Interactable).addChild(camera)
+                EventHandler.proceed()
             }
                 
             else if(parts[0] == "darkness") { //darkness
@@ -445,7 +457,6 @@ class Event{
                 
             }
             else if parts[0] == "leave" {
-                //Data.entityExists(parts[1])
                 
                 Data.entityExists(parts[2])
                 
@@ -460,38 +471,39 @@ class Event{
                     }
                 }
                 
-               player.removeFromParty( leaver )
+                player.removeFromParty( leaver )
                 
-                //remove(parts[1], from: Data.GameViewController!.scene!)
+                EventHandler.notify("\(parts[1]) leaves the party.", in: Data.GameViewController!.scene!)
                 
-                EventHandler.notify("\(parts[1]) left the party.", in: Data.GameViewController!.scene!)
+                EventHandler.proceed()
+                
             }
             else if parts[0] == "surprise" {
-                Data.entityExists(parts[1])
-                
-                EventHandler.suprise(Data.entities[ parts[1] ] as! Interactable)
+                EventHandler.suprise(scene.childNode(withName: parts[1]) as! Interactable)
             }
             else if parts[0] == "confuse" {
-                Data.entityExists(parts[1])
-                
-                EventHandler.confuse(Data.entities[ parts[1] ] as! Interactable)
+                EventHandler.confuse(scene.childNode(withName: parts[1]) as! Interactable)
             }
             else if parts[0] == "ponder" {
-                Data.entityExists(parts[1])
-                
-                EventHandler.ponder(Data.entities[ parts[1] ] as! Interactable)
+                EventHandler.ponder(scene.childNode(withName: parts[1]) as! Interactable)
             }
             else if parts[0] == "task" {
                 
                 Data.entityExists( parts[1] )
                 
-                Data.entityExists( parts[2] )
-                
                 let player = Data.entities[ parts[1] ] as! Player
+                var target: Interactable!
+                
+                if scene.childNode(withName: parts[2]) != nil {
+                    target = scene.childNode(withName: parts[2]) as! Interactable
+                }
+                else{
+                    target = Data.entities[ parts[2] ] as! Interactable
+                }
                 
                 let text = String( instruction.split(separator: " ", maxSplits: 3) [3] )
                 
-                player.assignTask( Task.init(text: text, target: Data.entities[parts[2]] as! Interactable) )
+                player.assignTask( Task.init(text: text, target: target) )
                 
                 EventHandler.notify(text, in: Data.GameViewController!.scene!)
                 
@@ -500,10 +512,11 @@ class Event{
             }
             else if parts[0] == "addduplicate" {
                 
-                let original = Data.entities[parts[1]]!
+                /*let original = Data.entities[parts[1]]!
                 let duplicate  = Interactable.init(multiframeCopyFrom: original)
                 original.clones += 1
-                duplicate.setName("\(original.name!)\(original.clones)")
+                duplicate.setName("\(original.name!)\(original.clones)")*/
+                let duplicate = Data.duplicateInteractable(named: parts[1])
                 
                 if parts.count == 4 {
                     add(entity: duplicate, inScene: scene, x: Int(parts[2])!, y: Int(parts[3])!)
@@ -541,6 +554,11 @@ class Event{
             }
             else if parts[0] == "fade" {
                 
+                var opacity: CGFloat = 1
+                if parts.count == 4 {
+                    opacity = CGFloat(Double(parts[3])!)
+                }
+                
                 if parts[1] == "in" {
                     
                     var color: UIColor!
@@ -550,8 +568,14 @@ class Event{
                     else if parts[2] == "black" {
                         color = .black
                     }
+                    else if parts[2] == "purple" {
+                        color = .purple
+                    }
+                    else {
+                        color = UIColor.init(red: 0.75, green: 0, blue: 0.01, alpha: 1)
+                    }
                     
-                    Data.GameViewController!.scene!.fadeIn(color: color, over: 0.5)
+                    Data.GameViewController!.scene!.fadeIn(color: color, over: 0.5, atOpacity: opacity)
                 }
                 else {
                     Data.GameViewController!.scene!.fadeOut(over: 0.5)
@@ -561,7 +585,28 @@ class Event{
             else if parts[0] == "save" {
                 
                 Data.save()
+                EventHandler.proceed()
                 
+            }
+            else if parts[0] == "faceall" {
+                
+                let target = scene.childNode(withName: parts[1])!
+                
+                for child in scene.children {
+                    if child is Interactable && child != target {
+                        (child as! Interactable).lookAt(target)
+                    }
+                }
+                
+                EventHandler.proceed()
+                
+            }
+            else if parts[0] == "toggleencounters" {
+                
+                Data.GameViewController!.scene!.randomEncountersActive = !Data.GameViewController!.scene!.randomEncountersActive
+                
+                print("Random encounters active set to: \(Data.GameViewController!.scene!.randomEncountersActive)")
+                EventHandler.proceed()
             }
             
             
@@ -578,10 +623,7 @@ class Event{
             
             if child.isClone {
                 
-                var originalName: String = child.name!
-                originalName.removeLast()
-                
-                Data.entities[originalName]!.clones -= 1
+                Data.deallocateClone(child)
                 
             }
             

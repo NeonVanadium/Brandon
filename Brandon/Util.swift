@@ -46,6 +46,8 @@ class Util{
     static func createOutline(w: Int, h: Int, color: UIColor) -> SKShapeNode{
         let outline = createRect(w: Double(w), h: Double(h), x: 0.0, y: 0.0)
         outline.strokeColor = color
+        outline.fillColor = .clear
+        outline.lineWidth = 5
         return outline
     }
     
