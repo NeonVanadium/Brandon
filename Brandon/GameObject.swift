@@ -247,6 +247,9 @@ class GameObject: SKNode{
         let Xduration = GameObject.getMotionTime(fromDistance: Int(x))
         let Yduration = GameObject.getMotionTime(fromDistance: Int(y))
         
+        
+        
+        
         self.run(SKAction.move(by: Xvector, duration: Xduration), completion: {
             
             self.run(SKAction.move(by: Yvector, duration: Yduration), completion: {
@@ -261,16 +264,29 @@ class GameObject: SKNode{
             
             self.startRunning()
             
+            if Yvector.dy < 0 {
+                self.face(.down)
+            }
+            else {
+                self.face(.up)
+            }
+            
         })
         
+        if Xvector.dx < 0 {
+            face(.left)
+        }
+        else {
+            face(.right)
+        }
         startRunning()
+        
+        
         
     }
     
     func combatMove(to point: CGPoint, duration d: TimeInterval){
-        self.run(.move(to: point, duration: d), completion: { self.standStill() })
-        
-        updateZPosition()
+        self.run(.move(to: point, duration: d), completion: { self.standStill(); self.updateZPosition() })
         
         startRunning()
     }

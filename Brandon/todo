@@ -2,13 +2,9 @@ water tile
 
 do the like sound position tracker thing so we can effectively manage restarting the audio ya know
 
-entities do not change to face the way they are walking in approachMove
-
 saving
 
 if approach is skipped, snap mover to end location
-
-notify dissapears on reload
 
 
 true

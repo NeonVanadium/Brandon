@@ -1,7 +1,7 @@
 Brandon;brandon;0;0;;0;relentless;attack;
-Jonathan;jonathan;0;0;;3;measured;attack
+Jonathan;jonathan;0;0;;0;measured;attack
 Julian;julian;0;0;;0;measured;attack
-Ley;ley;0;0;;3;relentless;quickAttack
+Ley;ley;0;0;;0;relentless;quickAttack
 Gwen;gwen;0;0;;2;constant;gwenattack,gwenheal
 Mask;mask;0;0;;0;relentless;heavyAttack
 

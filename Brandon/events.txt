@@ -41,7 +41,7 @@ face Julian Jonathan
 surprise Julian
 say Julian as (Stranger) Jonathan!
 
-say Jonathan Julian, get away from him.
+say Jonathan Julian, get away from the new arrival.
 
 face Julian Brandon
 say Julian Listen, I can explain everything. You need to come with me!
@@ -89,7 +89,7 @@ task Brandon Jonathan Speak to Jonathan.
 
 *
 jonathan_intro
-say Jonathan My name's Jonathan. I'm a friend.
+say Jonathan My name's Jonathan.
 move Jonathan left 1
 say Jonathan Welcome, I guess. This is the island.
 wait 0.2
@@ -108,8 +108,9 @@ ley_intro
 
 fade in black
 
-approach Jonathan Ley right 1
+remove Brandon
 approach Brandon Ley down 2
+approach Jonathan Ley right 1
 face Jonathan Brandon
 
 fade out
@@ -120,7 +121,7 @@ say Jonathan This is Ley.
 say Ley New arrival, hm?
 say Ley I'm Ley, as Jon said. Nice to meet you.
 confuse Ley
-move Ley down 1
+approach Ley Brandon up 1
 say Ley What's this mark on your forehead?
 ponder Ley
 say Ley The roman numeral two? What's that about?
@@ -142,6 +143,8 @@ say Ley But we'll be watching over you.
 add Gwen 12 29
 face Gwen up
 assign Gwen gwen_intro
+assign Jonathan Jon_background
+assign Ley Ley_background
 
 task Brandon Gwen Find Gwen on the northern shore.
 leave Jonathan Brandon
@@ -202,7 +205,7 @@ say Mask I see.
 face Brandon Gwen
 face Mask Brandon
 face Gwen Brandon
-say Gwen Do not worry about him. He is not why you are here. Hold still.
+say Gwen Hold still.
 
 face Gwen left
 ;(Gwen slides a ring onto her finger.)
@@ -231,6 +234,7 @@ confuse Brandon
 
 //Ley arrives
 approach Ley Brandon right 6
+move Ley down 1
 approach Ley Brandon right 1
 face Brandon Ley
 say Ley Not to alarm you, but if Mask is taking an interest in your identity, you'd best be worried.
@@ -546,7 +550,7 @@ toggleencounters
 notify The clones of Mask now lurk about the island. They may attack you as you move about.
 wait 3
 fade out
-task Brandon Gwen Seek out Gwen. Find answers.
+task Brandon Mask Find answers.
 save
 
 *
@@ -900,3 +904,23 @@ notify Mask's clones block the way forward.
 remove Julian
 fade out
 task Brandon Mask Find and destroy the original Mask.
+
+*
+Jon_background
+repeatable
+ponder Brandon
+say Jonathan You want to know about me?
+say Jonathan I'm from Miami.
+say Jonathan I used to love basketball.
+say Jonathan I work in HR at a small company.
+say Jonathan I'm stuck on an island. So are you.
+
+*
+Ley_background
+repeatable
+ponder Brandon
+say Ley You want to know about me?
+say Ley Well, I live around Houston. I'm 25. Was training to be a math teacher.
+say Ley I'm a first-generation American. My parents moved in from Thailand a while before I was born.
+say Ley I love boxing. And wrestling. And martial arts. I've been boxing since I was about five.
+say Ley That's the overview, I guess. I'd ask you about your past, if it weren't for the amnesiac thing.
