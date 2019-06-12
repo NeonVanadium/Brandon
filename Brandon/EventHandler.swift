@@ -162,9 +162,9 @@ class EventHandler {
         touchPrompt.size = .init(width: 30, height: 45)
         touchPrompt.texture?.filteringMode = .nearest
          
-        touchPrompt.zPosition = 98
+        touchPrompt.zPosition = 101
         
-        touchPrompt.position = CGPoint(x: Util.getScreenPosition(.right), y: Util.getScreenPosition(.bottom) - (CGFloat(Util.byTiles(1)) * 1.5))
+        touchPrompt.position = CGPoint(x: Util.getScreenPosition(.right) * 1.25, y: Util.getScreenPosition(.bottom) - (CGFloat(Util.byTiles(1)) * 1.75))
         
         var frames = [SKTexture].init()
         let atlas = SKTextureAtlas.init(named: "tap prompt")
@@ -308,7 +308,7 @@ class EventHandler {
         if(notifyLabel.parent != nil){
             notifyQueue.append(txt) //queues up notifications that are sent while another is already being displayed.
         }
-        else{
+        else if scene.children.count > 0 {
         
             notifyLabel.text = txt
             
@@ -334,6 +334,12 @@ class EventHandler {
             
         }
 
+    }
+    
+    static func unhookNotifyLabel() {
+        notifyLabel.removeAllActions()
+        notifyQueue = [String].init()
+        notifyLabel.removeFromParent()
     }
     
     private static func setupNotifyLabel(){

@@ -13,6 +13,7 @@ import AVFoundation
 class DialogueBox {
     
     private static var box : SKLabelNode = SKLabelNode.init()
+    private static var boxdim : SKShapeNode!
     //private static var speechBox : SKLabelNode = SKLabelNode.init()
     private static var nameLabel : SKLabelNode = SKLabelNode.init()
     private static var defaultPosition = CGPoint.zero
@@ -63,6 +64,14 @@ class DialogueBox {
         nameLabel.verticalAlignmentMode = .top
         nameLabel.position.y = 30
         nameLabel.fontName = "Arial Bold"
+        
+        let dimheight = 250.0
+        boxdim = Util.createRect(w: width * 2.2, h: dimheight, x: 0, y: 40 + (-dimheight / 2), color: .black)
+        boxdim.physicsBody = nil
+        boxdim.alpha = 0.4
+        boxdim.zPosition = -1
+        box.addChild(boxdim)
+        
         
         //SET UP AUDIO
         let click: URL! = Bundle.main.url(forResource: "dialoguetextclick", withExtension: "wav")

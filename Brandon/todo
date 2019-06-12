@@ -1,13 +1,20 @@
 water tile
 
-black cutscene bounds thing
-
 do the like sound position tracker thing so we can effectively manage restarting the audio ya know
-
-if a character has no defensives, don't let it keep trying to defend.
 
 entities do not change to face the way they are walking in approachMove
 
 saving
 
 if approach is skipped, snap mover to end location
+
+notify dissapears on reload
+
+
+true
+Brandon;brandon;4;6;;0;relentless;attack,interrupt;;Julian,Jonathan,Ley
+Gwen;gwen;40;28;;4;measured;attack,heal;
+(CLONE) Mask1;mask;39;20;Mask_rant;0;relentless;heavyAttack;
+(CLONE) Mask2;mask;40;20;Mask_rant;0;relentless;heavyAttack;
+(CLONE) Mask3;mask;41;20;Mask_rant;0;relentless;heavyAttack;
+Mask;mask;26;26;Mask1;0;relentless;heavyAttack;

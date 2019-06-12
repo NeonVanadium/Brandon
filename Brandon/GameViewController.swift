@@ -59,12 +59,13 @@ class GameViewController: UIViewController {
     }
     
     func toMenu(){
+        scene!.camera!.removeAllChildren()
+        scene!.removeAllChildren()
+        EventHandler.unhookNotifyLabel()
         self.dismiss(animated: true)
     }
     
     func startCombat(against opponents: [Interactable]){
-        
-        print("started combat")
         
         self.performSegue(withIdentifier: "startCombat", sender: self)
         Data.CombatViewController?.scene!.setup(against: opponents)

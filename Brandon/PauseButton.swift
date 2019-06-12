@@ -30,7 +30,15 @@ class PauseButton: SKShapeNode {
         self.zPosition = 10
         self.position.x = Util.getScreenPosition(.right)
         self.position.y = Util.getScreenPosition(.top)
+        self.position.x += 25
+        self.position.y += CGFloat(Double(Util.byTiles(1)) * 1.5)
         self.name = "pauseButton"
+        
+        let label = SKLabelNode.init(text: "II")
+        Util.setupLabel(label)
+        label.position = CGPoint(x: 25, y: 25)
+        label.zPosition = 10
+        self.addChild(label)
         
         createButton(withLabel: "Exit game")
         createButton(withLabel: "Current task")
@@ -56,7 +64,7 @@ class PauseButton: SKShapeNode {
     }
     
     private func createButton(withLabel l: String) {
-        let rect = Util.createRect(w: Double(Util.getScreenPosition(.right)), h: Double(PauseButton.boxHeight), x: 0, y: 0, color: .gray)
+        let rect = Util.createRect(w: Double(Util.getScreenPosition(.right) * 2), h: Double(PauseButton.boxHeight), x: 0, y: 0, color: .gray)
         rect.physicsBody = nil
         rect.name = l
         
@@ -65,6 +73,8 @@ class PauseButton: SKShapeNode {
         formatText(label)
         
         rect.addChild(label)
+        
+        rect.zPosition = 105
         
         buttons.append(rect)
     }
@@ -139,6 +149,8 @@ class PauseButton: SKShapeNode {
             let player = Data.GameViewController!.scene!.player!
             
             EventHandler.notify(player.getTaskDesc(), in: hostScene)
+            
+            print(hostScene == Data.GameViewController!.scene)
             
             //player.taskArrow(inScene: hostScene as! GameScene)
             

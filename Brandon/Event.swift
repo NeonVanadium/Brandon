@@ -19,7 +19,7 @@ class Event{
     private var parts: [EventPart] = [EventPart]()
     var expires: Bool = true //Is this event only playable a single time
     public static var currentlyHappening = false //is a happening currently being run
-    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam", "notify", "join", "leave", "surprise", "confuse", "ponder", "task", "addduplicate", "fade", "save", "faceall", "toggleencounters"]
+    public static let happeningKeys = ["add", "remove", "move", "assign", "end", "face", "fight", "approach", "say", "focus", "darkness", "wait", "rotate", "freecam", "notify", "join", "leave", "surprise", "confuse", "ponder", "task", "addduplicate", "fade", "save", "faceall", "toggleencounters", "learnability"]
     
     init(_ eventText: String){
         
@@ -128,6 +128,10 @@ class Event{
         }
         
         func occur(inScene scene: SKScene){
+            
+            if scene.children.count == 0 { //if the scene isn't loaded
+                return
+            }
             
             var isLine = false
             
@@ -554,10 +558,7 @@ class Event{
             }
             else if parts[0] == "fade" {
                 
-                var opacity: CGFloat = 1
-                if parts.count == 4 {
-                    opacity = CGFloat(Double(parts[3])!)
-                }
+                
                 
                 if parts[1] == "in" {
                     
@@ -571,8 +572,16 @@ class Event{
                     else if parts[2] == "purple" {
                         color = .purple
                     }
+                    else if parts[2] == "blue" {
+                        color = .blue
+                    }
                     else {
                         color = UIColor.init(red: 0.75, green: 0, blue: 0.01, alpha: 1)
+                    }
+                    
+                    var opacity: CGFloat = 1
+                    if parts.count == 4 {
+                        opacity = CGFloat(Double(parts[3])!)
                     }
                     
                     Data.GameViewController!.scene!.fadeIn(color: color, over: 0.5, atOpacity: opacity)
@@ -607,6 +616,22 @@ class Event{
                 
                 print("Random encounters active set to: \(Data.GameViewController!.scene!.randomEncountersActive)")
                 EventHandler.proceed()
+            }
+            else if parts[0] == "learnability" {
+                
+                var learner: Interactable!
+                
+                if scene.childNode(withName: parts[1]) != nil {
+                    learner = scene.childNode(withName: parts[1])! as! Interactable
+                }
+                else {
+                    learner = Data.entities[parts[1]]! as! Interactable
+                }
+                
+                learner.battleBrain?.addAbility(Data.abilities[parts[2]]!)
+                
+                EventHandler.proceed()
+                
             }
             
             

@@ -33,7 +33,7 @@ class MainMenuViewController: UIViewController {
                     
                     view.ignoresSiblingOrder = true
                     
-                    view.showsFPS = true
+                    view.showsFPS = false
                     //view.showsNodeCount = true
                 }
             }

@@ -38,6 +38,8 @@
 		56D376E6220B72780002B42C /* MainMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D376E5220B72780002B42C /* MainMenuViewController.swift */; };
 		56D61E392188FBC0007121FE /* maps.txt in Resources */ = {isa = PBXBuildFile; fileRef = 56D61E382188FBC0007121FE /* maps.txt */; };
 		56D61E41218A3875007121FE /* EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D61E40218A3875007121FE /* EventHandler.swift */; };
+		56D8518022B0B72400394EDE /* battle (1).mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 56D8517F22B0B72300394EDE /* battle (1).mp3 */; };
+		56D8518222B0B96200394EDE /* step.wav in Resources */ = {isa = PBXBuildFile; fileRef = 56D8518122B0B96200394EDE /* step.wav */; };
 		56DDAFE622ACB5E100001700 /* savefile.txt in Resources */ = {isa = PBXBuildFile; fileRef = 56DDAFE522ACB5E100001700 /* savefile.txt */; };
 		56E9293C21C1A3AD00155180 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 56E9293B21C1A3AC00155180 /* GameScene.sks */; };
 /* End PBXBuildFile section */
@@ -95,6 +97,8 @@
 		56D376E5220B72780002B42C /* MainMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuViewController.swift; sourceTree = "<group>"; };
 		56D61E382188FBC0007121FE /* maps.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = maps.txt; sourceTree = "<group>"; };
 		56D61E40218A3875007121FE /* EventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHandler.swift; sourceTree = "<group>"; };
+		56D8517F22B0B72300394EDE /* battle (1).mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "battle (1).mp3"; path = "Assets.xcassets/Sounds/battle.dataset/battle (1).mp3"; sourceTree = "<group>"; };
+		56D8518122B0B96200394EDE /* step.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = step.wav; path = Assets.xcassets/Sounds/step.dataset/step.wav; sourceTree = "<group>"; };
 		56DDAFE522ACB5E100001700 /* savefile.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = savefile.txt; sourceTree = "<group>"; };
 		56E9293B21C1A3AC00155180 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -149,6 +153,7 @@
 				563778DC2202372C009B0C05 /* Main.storyboard */,
 				5660150C214C54190072AB50 /* LaunchScreen.storyboard */,
 				5660150A214C54190072AB50 /* Assets.xcassets */,
+				56D8517F22B0B72300394EDE /* battle (1).mp3 */,
 				56D150E822A845FD00BC4300 /* dialoguetextclick.wav */,
 				563778DA22023571009B0C05 /* Actions.sks */,
 				56E9293B21C1A3AC00155180 /* GameScene.sks */,
@@ -164,6 +169,7 @@
 				56C4DB3A2177C7C40061F94A /* Util.swift */,
 				56C4DB382177C51D0061F94A /* DialogueBox.swift */,
 				56399061219CBA19004805F2 /* GameObject.swift */,
+				56D8518122B0B96200394EDE /* step.wav */,
 				56C28ECC216D4A0D003F2B48 /* Interactable.swift */,
 				56C4DB3C217E6E6F0061F94A /* Player.swift */,
 				560B803C21937DD9007A0E7C /* Data.swift */,
@@ -176,8 +182,8 @@
 				560B80382190F091007A0E7C /* events.txt */,
 				56B2BDDC21CADF680052AB90 /* tiles.txt */,
 				56AA4AE622A70A8800099663 /* abilities.txt */,
-				562F019621F900E500A1A8FF /* todo */,
 				56DDAFE522ACB5E100001700 /* savefile.txt */,
+				562F019621F900E500A1A8FF /* todo */,
 				5660150F214C54190072AB50 /* Info.plist */,
 			);
 			path = Brandon;
@@ -295,6 +301,8 @@
 				563778DB22023571009B0C05 /* Actions.sks in Resources */,
 				563779092202412D009B0C05 /* Combat.sks in Resources */,
 				56B32F6F22A5C02B00D154E8 /* hitsfx.mp3 in Resources */,
+				56D8518022B0B72400394EDE /* battle (1).mp3 in Resources */,
+				56D8518222B0B96200394EDE /* step.wav in Resources */,
 				56377907220240C5009B0C05 /* MainMenu.sks in Resources */,
 				56D150E922A845FD00BC4300 /* dialoguetextclick.wav in Resources */,
 				56AA4AE722A70A8800099663 /* abilities.txt in Resources */,

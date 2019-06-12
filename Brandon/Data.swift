@@ -111,18 +111,27 @@ class Data{
         let width = map[1].split(separator: " ").count - 1//Int(String(dimensions[1]))!
         let height = map.count - 1//Int(String(dimensions[2]))!
         
-        for row in 1...height { //for rows starting at 1 ending at height
+        for row in -10...height + 10 { //for rows starting at 1 ending at height
             
-            let curLine = map[height - row + 1].split(separator: " ")
+            var curLine: [Substring]!
             //let curLineObjects = map[row + height].split(separator: " ")
             
-            for col in 0...width {
-                
-                let tileVal = curLine[col] //the integer id of a tile as parsed from the map file
+            for col in -10...width + 10{
                 
                 let position = CGPoint(x: CGFloat.init(col * tileSideLength), y: CGFloat.init(row * tileSideLength)) //the current location (top-left pixel) of the current tile
                 
-                if(tileVal != "-"){
+                let inMapBounds = (row > 0 && row < height) && (col > 0 && col < width)
+                
+                var tileVal: String!
+                if ( inMapBounds ) {
+                    curLine = map[height - row + 1].split(separator: " ")
+                    tileVal = String(curLine[col]) //the integer id of a tile as parsed from the map file
+                }
+                else {
+                    tileVal = "-"
+                }
+                
+                if tileVal != "-" {
             
                     let texture = loadTile(Int(tileVal)!)
                     let tile = SKSpriteNode.init(texture: texture)
@@ -139,6 +148,8 @@ class Data{
                     
                 }
                 else{
+                    
+                    
                     scene.addChild(Util.createRect(w: Double(tileSideLength), h: Double(tileSideLength), x: Double(position.x), y: Double(position.y)))
                 }
                 
@@ -206,7 +217,10 @@ class Data{
             
         }
         
+        archiver.finishEncoding()
         let worked = NSKeyedArchiver.archiveRootObject(archiver, toFile: "savefile.txt")
+        
+        
         print(worked)
 
         //print( Util.loadFile(name: "savefile", extension: "txt"))
@@ -268,7 +282,6 @@ class Data{
     
     static func deallocateClone(_ c: Interactable) {
         if c.isClone {
-            print("deallocated \(c.name!)")
             c.cloneOf!.clones -= 1
         }
     }

@@ -36,7 +36,7 @@ class CombatViewController: UIViewController {
                     
                     view.ignoresSiblingOrder = true
                     
-                    view.showsFPS = true
+                    view.showsFPS = false
                     //view.showsNodeCount = true
                 }
             }
@@ -50,6 +50,8 @@ class CombatViewController: UIViewController {
     }
     
     func toMenu(){
+        Data.GameViewController!.scene!.removeAllChildren()
+        EventHandler.unhookNotifyLabel()
         Data.MainMenuViewController!.dismiss(animated: true, completion: {})
     }
     

@@ -22,6 +22,7 @@ class Combat: SKScene{
     private var playerTargetOutline = Util.createOutline(w: Data.tileSideLength, h: Data.tileSideLength + 10, color: .red)
     
     static var combatHit: AVAudioPlayer!
+    static var battleMusic: AVAudioPlayer!
     
     private var isOver = false
     
@@ -34,12 +35,14 @@ class Combat: SKScene{
         //Set up the audio
         
         let hit: URL! = Bundle.main.url(forResource: "hitsfx", withExtension: "mp3")
+        let battle: URL! = Bundle.main.url(forResource: "battle (1)", withExtension: "mp3")
         
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
             
             Combat.combatHit = try AVAudioPlayer(contentsOf: hit, fileTypeHint: AVFileType.mp3.rawValue)
+            Combat.battleMusic = try AVAudioPlayer(contentsOf: battle, fileTypeHint: AVFileType.mp3.rawValue)
         }
         catch {
             print("audio for Combat failed to load")
@@ -107,7 +110,9 @@ class Combat: SKScene{
         addChild(label)
         
         playerTargetOutline.name = "targetOutline"
+        updateStatusLabel()
         
+        Combat.battleMusic.play()
         self.incrementTime() //begins the timer
         
     }
@@ -118,6 +123,10 @@ class Combat: SKScene{
             {
                 if !self.isOver {
                 
+                    if !Combat.battleMusic.isPlaying {
+                        Combat.battleMusic.play()
+                    }
+                    
                     self.globalEnergyUpkeep()
                     
                     self.allEnemiesThink()
@@ -257,6 +266,7 @@ class Combat: SKScene{
     private func end() { //cleans up
         
         isOver = true
+        Combat.battleMusic.stop()
         
         for i in allies + enemies {
             i.removeAllActions()
@@ -293,25 +303,27 @@ class Combat: SKScene{
         var x = 0
         var y = 0
         
+        let extraspacing = 2
+        
         if(i.isAlly){
             
             x = Util.byTiles(-2)
             
-            let height = Util.byTiles(allies.count)
+            let height = Util.byTiles(allies.count) * extraspacing
             
             let startPoint = height / 2
             
-            y = startPoint - (Util.byTiles(allies.index(of: i) ?? 0))
+            y = startPoint - ((Util.byTiles(allies.index(of: i) ?? 0)) * extraspacing)
             
         }
         else {
             x = Util.byTiles(2)
             
-            let height = Util.byTiles(enemies.count)
+            let height = Util.byTiles(enemies.count) * extraspacing
             
             let startPoint = height / 2
             
-            y = startPoint - (Util.byTiles(enemies.index(of: i) ?? 0))
+            y = startPoint - ((Util.byTiles(enemies.index(of: i) ?? 0)) * extraspacing)
         }
         
         return CGPoint(x: x, y: y)

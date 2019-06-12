@@ -46,8 +46,6 @@ class Interactable: GameObject {
         }
         
         battleBrain = (other as! Interactable).battleBrain!.clone(for: self)
-        
-        print(name!)
        
     }
     
@@ -269,7 +267,10 @@ class Interactable: GameObject {
             defensiveThreshhold = d
             owner = i
             
-            if(a == "relentless"){
+            if a == "constant" {
+                attackingBehavior = .constant
+            }
+            else if(a == "relentless"){
                 attackingBehavior = .relentless
             }
             else if(a == "measured"){
@@ -413,6 +414,9 @@ class Interactable: GameObject {
         }
         
         fileprivate func attackFrequencyString(_ a: attackFrequency) -> String{
+            if(a.rawValue == 0) {
+                return "constant"
+            }
             if(a.rawValue == 3){
                 return "relentless"
             }
@@ -425,7 +429,7 @@ class Interactable: GameObject {
         
         enum attackFrequency: Int {
             
-            case relentless = 3, measured = 4, slow = 5
+            case constant = 0, relentless = 3, measured = 4, slow = 5
             
         }
         

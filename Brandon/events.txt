@@ -47,7 +47,7 @@ face Julian Brandon
 say Julian Listen, I can explain everything. You need to come with me!
 move Jonathan left 1
 face Julian Jonathan
-face Jonathan Julian
+face Jonathan Brandon
 say Jonathan Don't trust him, arrival. The last one he took died.
 surprise Julian
 face Julian Brandon
@@ -56,33 +56,34 @@ say Julian Fine! I'll fight you both if I have to!
 surprise Jonathan
 approach Jonathan Julian up 1
 say Jonathan Arrival, I'll fight with you. Defend yourself!
-join Jonathan Brandon
 
 fade in black
+join Jonathan Brandon
 ;You are about to enter combat.
-;Combat is real-time. As seconds pass, you will gain energy points.
+;Combat is real-time. As seconds pass, you will gain ENERGY points.
 ;All abilities, once activated, have a charge timer.
-;If someone is attacked while their ability charges, the ability is cancelled.
-;Buttons at the bottom of your screen indicate, when blue, that a given ability can be used.
+;If someone is attacked while their ABILITY charges, the ABILITY is cancelled.
+;Buttons at the bottom of your screen indicate, when blue, that a given ABILITY can be used.
+;Tap a character to make them your TARGET.
 ;Good luck.
 
 fight Julian
-fade out
 
 add Jonathan 4 8
-face Julian Jonathan
-surprise Julian
-move Julian left 1
-
-fade in white
-remove Julian
 fade out
 
-face Jonathan left
-confuse Jonathan
-say Jonathan He... teleported?
-face Jonathan Brandon
-say Jonathan A question for later. Come here.
+face Julian Jonathan
+surprise Julian
+say Julian Fine, fine, I'm leaving, just let me be.
+move Jonathan left 1
+move Julian up 2
+face Jonathan right
+move Julian right 6
+remove Julian
+
+ponder Jonathan
+approach Jonathan Brandon up 2
+say Jonathan Come here.
 assign Jonathan jonathan_intro
 task Brandon Jonathan Speak to Jonathan.
 
@@ -94,8 +95,8 @@ say Jonathan Welcome, I guess. This is the island.
 wait 0.2
 move Jonathan right 1
 face Jonathan Brandon
-say Jonathan There's someone else I'd like you to meet. She's better at explaining things than me.
-say Jonathan She'll be just east-northeast. I'll come with you. It's not safe to be alone before you get your bearings.
+say Jonathan I have a friend. She's better at explaining things than I am.
+say Jonathan She's not far northeast. I'll come with you.
 join Jonathan Brandon
 add Ley 15 15
 assign Ley ley_intro
@@ -132,7 +133,7 @@ say Ley Well, Amnesia isn't unheard of among new arrivals.
 say Jonathan Could Gwen help?
 say Ley Probably so. A good idea.
 confuse Brandon
-say Ley The short of it is that there are supernatural forces here on the island.
+say Ley The short of it is that there are forces at work on the island beyond understanding
 say Ley Some that arrive have supernatural abilities, too, called gifts. Gwen is one of them.
 say Ley She might be able to help you restore your memory. She's solitary, so she usually hangs out alone, on the northern shore.
 say Jonathan Right, so, I'll stay behind.
@@ -229,11 +230,11 @@ remove Gwen
 confuse Brandon
 
 //Ley arrives
-approach Ley Brandon down 6
-approach Ley Brandon down 1
+approach Ley Brandon right 6
+approach Ley Brandon right 1
 face Brandon Ley
 say Ley Not to alarm you, but if Mask is taking an interest in your identity, you'd best be worried.
-say Ley But anyway, did you learn anything about yourself?
+say Ley Did you learn anything about yourself?
 ponder Brandon
 say Ley Your name is Brandon, but you were born in the ocean, and you're less than a day old?
 ponder Ley
@@ -265,19 +266,19 @@ surprise Brandon
 ponder Jonathan
 say Jonathan Today's food. Whose turn was it?
 say Ley Julian's, right?
-say Jonathan Yep, there he is.
+say Jonathan Right. I see him over there.
 confuse Brandon
 face Ley Brandon
 say Ley You've no doubt noticed the island is almost entirely flat and barren, save some grass.
 say Ley I mentioned earlier some "forces beyond our understanding." Well, those forces are the only reason we have any food or drinkable water.
 say Jonathan We take turns eating. The longer the island goes without a death, the less food appears.
 say Ley Since Brandon just showed up, there might be leftovers?
-say Jonathan Good point. Let's head over there. Get Brandon something to eat. I remember I was starving when I arrived.
+say Jonathan Let's head over there and get Brandon something to eat. I remember I was starving when I arrived.
 
 add Julian 40 14
 assign Julian julian2
 face Julian up
-task Brandon Julian Food. Julian's got some, to the east of your meeting point with Jon and Ley.
+task Brandon Julian Get some food from Julian, to the east of your meeting point with Jon and Ley.
 join Jonathan Brandon
 remove Ley
 save
@@ -293,8 +294,7 @@ face Ley Julian
 face Julian Brandon
 surprise Julian
 say Julian I'm not doing anything! I'm just eating! It's my turn!
-say Jonathan We're not here to hurt you, Julian. We were just wondering if there were any leftovers.
-say Ley For the new arrival.
+say Ley We're not here to hurt you, Julian. We were just wondering if there were any leftovers for the arrival.
 ponder Julian
 say Julian ...alright. Here, take some.
 ;(Julian hands over some vegetables. They taste plain, but fresh.)
@@ -384,10 +384,11 @@ approach Gwen Mask up 2
 say Gwen Excellent.
 say Gwen The mask is functioning wonderfully. It is worth the unforseen side-effect.
 faceall Gwen
+face Mask3 up
 say Mask Shall I pursue them?
 say Gwen You shall.
 face Gwen right
-say Gwen There has only ever been six at once, as is the rule. With the mask, the rules have been broken. Hopefully the end is near.
+say Gwen There have only ever been six at once, as is the rule. With the mask, the rules have been broken. Hopefully the end is near.
 fade in black
 
 remove Gwen
@@ -397,15 +398,71 @@ remove Mask2
 remove Mask3
 remove Mask4
 
-add Brandon 2 2
+//Brandon II's ability is revealed
+add Brandon 49 12
 approach Jonathan Brandon up 1
 approach Ley Jonathan left 1
-add Julian 4 5
+approach Julian Brandon down 1
 focus Brandon
+faceall Brandon
 fade out
-confuse Jonathan
+
+move Julian down 2
+move Brandon down 2
+move Jonathan down 2
+move Ley down 2
+
+face Ley up
+face Jonathan up
+
+say Ley What in the world?
+face Julian Brandon
+say Julian Hey, new guy, there's no time to explain, but I need you to hit Jonathan in the sternum.
+faceall Julian
+confuse Brandon
 confuse Ley
-say Ley I knew Gwen could pull of some magic, but that was...
+face Ley Jonathan
+surprise Jonathan
+
+say Jonathan What now?
+
+say Julian There's no time, just trust me!
+face Brandon Jonathan
+wait 0.4
+face Brandon Julian
+ponder Brandon
+say Julian Please, trust me just once!
+approach Brandon Jonathan right 1
+face Brandon Jonathan
+face Jonathan Brandon
+ponder Brandon
+fade in white
+fade out
+fade in blue 0.3
+surprise Jonathan
+surprise Brandon
+surprise Ley
+
+say Julian You feel it, right?
+say Jonathan I... yes.
+say Julian So do it.
+say Jonathan Going.
+
+fade in white
+remove Brandon
+remove Jonathan
+remove Ley
+remove Julian
+add Brandon 2 3
+add Julian 4 7
+approach Jonathan Brandon up 1
+approach Ley Jonathan left 1
+faceall Jonathan
+fade out
+
+confuse Ley
+say Ley How did we get here?
+say Jonathan I have... a gift?
 say Julian I can explain.
 faceall Julian
 
@@ -416,11 +473,11 @@ save
 *
 julian3
 faceall Julian
-say Julian I know what the mask does. That is my gift.
+say Julian I know what the mask does. That is part of my gift.
 confuse Jonathan
-say Jonathan I didn't know you had a gift. I thought the only one now who did was Gwen.
+say Jonathan I didn't know you had a gift. I thought the only one who did was Gwen.
 say Julian Mine is hard to show. Clairvoyance. I get visions of the island's past and present.
-say Julian Seeing that mask... I had one. I saw Gwen putting it one someone.
+say Julian Seeing that mask... I had one. I saw Gwen putting it on someone.
 face Julian left
 ponder Julian
 face Julian Brandon
@@ -441,22 +498,40 @@ say Ley No, I don't.
 say Julian Neither did I. But in the visions I get, I can see him. In fact, he only put the mask on a couple days ago.
 say Jonathan But Ley and I have been here for months.
 say Julian Me too. Some Gift edited our memories, so we don't remember a time before the mask.
+say Julian But in the visions, I see glimpses of the man under the mask with you two, Jon and Ley. His name was Brandon, too.
+say Julian Brandon had a gift. A gift that controlled other gifts, could bring dormant ones out of people.
+
+ponder Julian
+face Julian Jonathan
+say Julian A long time ago, I saw an image of you, Jon, teleporting. I tested my theory about Brandon here by having him use his gift, unknowingly.
+
+ponder Jonathan
+
+say Ley Why didn't you say any of this before?
+say Julian I couldn't. It's like something was blocking me from speaking. Until my scuffle with Brandon when he first got here.
+say Julian It's like something was lifted. A seal broken.
+
+face Julian Brandon
+say Julian Also, Brandon, in combat, you should be able to quickly interrupt your opponent with your gift if they're readying an attack.
+learnability Brandon interrupt
+
+notify Learned the "Interrupt" ability.
 
 //Julian realizes Mask is doing stuff
 face Julian up
 surprise Julian
 faceall Julian
+say Julian Mask just made... tons of clones. They're moving all over the island. I saw them with my gift.
 face Julian down
-say Julian Mask just made... tons of clones. They're moving all over the island. I can't see them with my eyes, but my gift just told me where they were.
 say Julian Gwen created the mask. She's the only one who can explain. Let's move together.
 fade in black
 join Julian Brandon
 join Jonathan Brandon
 join Ley Brandon
 
-
 //cleanup
 add Gwen 40 28
+face Gwen up
 
 assign Mask Mask_rant
 addduplicate Mask 39 20
@@ -464,11 +539,12 @@ addduplicate Mask 40 20
 addduplicate Mask 41 20
 
 add Mask 26 26
+face Mask down
 assign Mask Mask1
 
 toggleencounters
 notify The clones of Mask now lurk about the island. They may attack you as you move about.
-wait 2
+wait 3
 fade out
 task Brandon Gwen Seek out Gwen. Find answers.
 save
@@ -482,10 +558,12 @@ approach Julian Brandon up 1
 approach Jonathan Brandon down 1
 approach Ley Jonathan down 1
 faceall Mask
+face Ley left
 face Mask Brandon
 fade out
 say Mask The island will be purged.
-fade in white
+
+fade in red
 addduplicate Mask Mask up 1
 addduplicate Mask Mask down 1
 face Mask4 Brandon
@@ -496,7 +574,7 @@ wait 0.5
 fight Mask Mask4 Mask5
 
 wait 0.5
-fade in white
+fade in red
 remove Mask4
 remove Mask5
 fade out
@@ -505,17 +583,273 @@ say Mask Pointless.
 fade in red 0.3
 say Mask The more damage I take, the more the mask's power grows.
 
-fade in white
+fade in red
+
 addduplicate Mask Mask up 1
 addduplicate Mask Mask down 1
 addduplicate Mask Mask up 2
 addduplicate Mask Mask down 2
-face Mask4 left
-face Mask5 left
-face Mask6 left
-face Mask7 left
+face Mask4 right
+face Mask5 right
+face Mask6 right
+face Mask7 right
 
+fade in red 0.3
+
+say Mask These are more powerful than those before them.
+
+fight Mask Mask4 Mask5 Mask6 Mask7
+
+fade in red
+remove Mask4
+remove Mask5
+remove Mask6
+remove Mask7
 fade out
+
+//Mask is silenced
+
+ponder Mask
+
+say Mask I only grow stronger.
+fade in red 0.5
+wait 0.5
+surprise Julian
+say Julian Brandon, now, use your gift! Silence him!
+
+approach Brandon Mask right 1
+surprise Mask
+fade in white
+remove Mask1
+remove Mask2
+remove Mask3
+fade out
+wait 0.5
+move Mask left 1
+face Mask right
+wait 0.5
+face Mask left
+wait 0.3
+face Mask down
+say Mask ...I can't... make more?
+surprise Mask
+rotate Mask 90
+ponder Julian
+say Julian The Mask's control over him is passing.
+wait 0.5
+rotate Mask 0
+
+face Mask left
+wait 0.3
+face Mask right
+ponder Mask
+say Mask Where am I?
+ponder Julian
+
+say Julian Do you remember your name?
+ponder Mask
+say Mask ...Brandon. It's Brandon.
+approach Mask Jonathan left 1
+say Mask You're Jonathan.
+approach Mask Ley left 1
+say Mask You're Ley.
+approach Mask Julian left 1
+say Mask And you're Julian.
+approach Mask Brandon left 1
+say Mask You... you look just like me. Except for the tattoo.
+
+face Julian Mask
+say Julian What's the last thing you remember?
+move Mask left 1
+ponder Mask
+say Mask The woman. Gwen. I couldn't move. She put something on my face.
+;(The masked man feels his face with his hand.)
+say Mask This.
+ponder Mask I used to have a gift. I can't feel it anymore.
+ponder Ley
+say Ley An effect of the mask itself, maybe?
+face Julian down
+say Julian The path to Gwen should be clear now. We can get our answers.
+face Julian Mask
+
+say Julian Brandon.
+face Mask Julian
+face Brandon Julian
+wait 0.4
+face Julian Brandon
+wait 0.4
+face Julian Mask
+wait 0.3
+say Julian Um, Brandon One. You should come with us. We'll figure out what the deal with you and Two is.
+ponder Mask
+say Mask Very well.
+
+fade in black
+toggleencounters
+assign Gwen Gwen_Mono
+face Gwen up
+task Brandon Gwen Find Gwen. Find answers.
+join Mask Brandon
+remove Jonathan
+remove Julian
+remove Ley
+save
+fade out
+
+
+*
+Gwen_Mono
+fade in black
+approach Brandon Gwen down 1
+approach Mask Brandon down 1
+approach Julian Mask down 1
+approach Ley Julian down 1
+approach Jonathan Ley down 1
+fade out
+
+face Gwen up
+say Gwen You stopped the purging.
+say Gwen I was so close.
+face Gwen Brandon
+say Gwen This place has been my home, mine alone, for centuries.
+say Gwen I want you parasites gone.
+
+ponder Julian
+say Julian Centuries? You've lived that long?
+say Gwen Yes. This island got its power from me. All of what you call "gifts" are fueled by my power.
+move Gwen up 1
+say Gwen I have always had the power to attach the supernatural to the natural.
+say Gwen Naturally, there are often side-effects that I do not forsee.
+say Gwen In setting up this island to host me comfortably forever, I accidentally cursed it. The rules are an accident of mine.
+
+ponder Ley
+say Ley The rules. Like how there are always six people on the island at a time.
+say Gwen And if one dies, they are replaced within a day. Plucked from somewhere to be washed ashore here. To satisfy the rules.
+say Gwen The food that appears daily was a spell designed to keep me in comfort. Instead, it sustains parasites.
+move Gwen down 1
+move Gwen left 1
+say Gwen I have figured out two ways to rid myself of this mistake.
+move Gwen right 2
+say Gwen First: I die.
+say Gwen Non-negotiable.
+say Gwen Second: The mask.
+say Gwen The mask robs its wearer of free will, and whatever "gift" they have.
+say Gwen In exchange. They become a slave of mine, and acquire instead the gift of self-duplication.
+say Gwen The clones count as people on the island. If there were six clones of one person, no new parasites would arrive.
+say Gwen A dissapearing clone does not count as a death. It should not cause new parasites to arrive.
+move Gwen left 1
+face Gwen Brandon
+say Gwen As simply killing the parasites is futile, I've worked for years on perfecting this plan.
+say Gwen Creating the mask. Using my powers to keep you parasites from understanding that my death is your way out.
+say Gwen It would have worked, if the mask hadn't had the side-effect.
+say Gwen It seems that when the mask is put on, the gift that is lost is reincarnated in an exact copy of the wearer's body.
+say Gwen By coincidence, you happened to remove the seal I had placed on Julian.
+say Gwen In so doing, you allowed him to communicate his visions to others. In this way, you have unraveled me.
+say Gwen I have no choice, then, but to start over.
+move Gwen up 1
+ponder Gwen
+fade in purple 0.3
+surprise Brandon
+surprise Mask
+surprise Julian
+surprise Ley
+surprise Jonathan
+fade in purple
+move Gwen down 1
+addduplicate Gwen Gwen left 1
+move Gwen right 1
+face Gwen down
+face Gwen1 down
+fade out
+say Gwen I can only create one clone of myself without drawbacks.
+say Gwen But it should more than suffice to destroy you all.
+say Gwen Begone, parasites!
+
+fight Gwen Gwen1
+
+fade in white
+remove Gwen1
+fade out
+surprise Gwen
+move Gwen left 1
+say Gwen No... No!
+move Gwen up 1
+face Gwen down
+say Gwen I... can still fight!
+
+fight Gwen
+ponder Gwen
+face Gwen up
+fade in purple 0.2
+fade in white 0.2
+fade in purple 0.2
+say Gwen So this is how it ends.
+fade in white
+remove Gwen
+fade out
+
+wait 0.2
+
+ponder Julian
+say Julian So it's... done?
+say Ley What happens now?
+
+fade in white 0.2
+
+confuse Julian
+say Julian What's this?
+fade in white
+faceall Julian
+remove Julian
+fade out
+
+say Mask He has dissapeared.
+say Ley But... where to?
+
+fade in white
+remove Mask
+fade out
+
+say Ley Mask, too?
+face Ley down
+say Ley Jonathan, I don't know what's going on.
+say Ley But if I never see you again: thank you. You made this island a lot more bearable than it would've been alone.
+say Ley Quiet man though you may be.
+
+fade in white
+remove Ley
+fade out
+
+wait 0.3
+ponder Jonathan
+approach Jonathan Brandon down 1
+say Jonathan You've certainly had an eventful hour or so, haven't you?
+say Jonathan But we're free now. You don't know how much that means.
+say Jonathan Thanks.
+
+fade in white
+remove Jonathan
+fade out
+
+
+
+ponder Brandon
+
+move Brandon up 2
+
+ponder Brandon
+wait 0.5
+
+fade in white
+fade in black
+;Those that survived the island all found themselves back in human civilization.
+;Jonathan awoke in his apartment in Florida.
+;Ley arrived at her grandparents' house in Thailand.
+;Julian appeared at his five-year high school reunion in California, having been reported missing for over a year, to much commotion.
+;Brandon One returned to his boyfriend in New York city. Having been missing for over two years, his boyfriend had moved on long ago.
+;A man with the roman numeral two tattooed on his head was reported in several impoverished countries mere days before the miraculous dissapearance of various infectious diseases from the people.
+;The island was never set foot on again.
+end
 
 
 //repeatable (non-progressors/ambient)
@@ -560,7 +894,7 @@ fade out
 surprise Brandon
 face Julian Brandon
 say Julian It looks like these clones are going to keep regenerating.
-say Julian Since they regenerated, they're definitely not the original. We need to find him.
+say Julian We need to find the original.
 fade in black
 notify Mask's clones block the way forward.
 remove Julian

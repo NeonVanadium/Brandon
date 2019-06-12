@@ -3,3 +3,5 @@ quickAttack enemy 1 1.0 3
 heavyAttack enemy 2 2.5 4
 heal personal -2 1 3
 interrupt enemy 0 0.2 1
+gwenattack enemy 1 1 0
+gwenheal self 2 1.2 1

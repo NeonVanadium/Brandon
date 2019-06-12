@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFoundation
 import SpriteKit
 
 class GameObject: SKNode{
@@ -31,7 +32,14 @@ class GameObject: SKNode{
     var cloneOf: GameObject?
     let isClone: Bool
     
+    static var soundsSetup = false
+    static var step: AVAudioPlayer!
+    
     init(multiframeFrom line: String){ //for objects with multiple frames
+        
+        if !GameObject.soundsSetup {
+            GameObject.setupSounds()
+        }
         
         /*
          ORDER OF PARAMETERS
@@ -133,6 +141,21 @@ class GameObject: SKNode{
     func setupTexture(_ t: SKTexture) -> SKTexture { //sets up textures to be added to the arrays
         t.filteringMode = .nearest
         return t
+    }
+    
+    static func setupSounds() {
+        let step: URL! = Bundle.main.url(forResource: "step", withExtension: "wav")
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+            GameObject.step = try AVAudioPlayer(contentsOf: step, fileTypeHint: AVFileType.wav.rawValue)
+            soundsSetup = true
+        }
+        catch {
+            print("audio for GameObject failed to load")
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -293,6 +316,14 @@ class GameObject: SKNode{
         if(!moving){
             
             body.run(SKAction.repeatForever(.animate(with: curAnim, timePerFrame: frameTime)))
+            
+            /*GameObject.step.play()
+            
+            body.run( .repeatForever( .run {
+                self.body.run( .wait(forDuration: self.frameTime ), completion: { GameObject.step.play(atTime: 0.0) })
+                }) )*/
+            
+            
         }
         
         moving = true

@@ -234,9 +234,12 @@ class GameScene: SKScene {
     func fadeIn(color: UIColor, over t: TimeInterval, atOpacity: CGFloat){
         colorFilter.fillColor = color
         
-        colorFilter.alpha = atOpacity
-        
-        colorFilter.run( .fadeIn(withDuration: t), completion: { EventHandler.proceed() })
+        if(atOpacity != 1) {
+            colorFilter.run( .fadeAlpha(to: atOpacity, duration: t), completion: { EventHandler.proceed()})
+        }
+        else {
+            colorFilter.run( .fadeIn(withDuration: t), completion: { EventHandler.proceed() })
+        }
         
     }
     
@@ -255,10 +258,11 @@ class GameScene: SKScene {
             var enemyParty = [Interactable].init()
             
             for _ in 1...enemyCount {
-                enemyParty.append( Data.duplicateInteractable(named: "Mask") )
+                enemyParty.append( Data.entities["Mask"]! as! Interactable )
             }
             
             viewContoller?.startCombat(against: enemyParty )
+            
         }
         
     }
